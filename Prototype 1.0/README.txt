@@ -1,0 +1,1 @@
+Ga naar zowel client als server en open de server.exe en client.exe.
