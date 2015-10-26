@@ -9,7 +9,7 @@ public class ColorSwitch : MonoBehaviour
 	void Start ()
 	{
 		mat = this.GetComponent<Renderer> ().material;
-		setter = 0;
+		setter = 2;
 	}
 	
 	// Update is called once per frame

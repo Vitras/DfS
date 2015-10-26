@@ -1,5 +1,7 @@
 using UnityEngine;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Client : MonoBehaviour
 {
@@ -8,7 +10,8 @@ public class Client : MonoBehaviour
 	public int port = 25000;
 	private string _messageLog = "";
 	string someInfo = "";
-	private NetworkPlayer _myNetworkPlayer;
+	private NetworkPlayer _myNetworkPlayer;	
+	public List<int> triggers;
 	
 	void OnGUI ()
 	{
@@ -37,11 +40,21 @@ public class Client : MonoBehaviour
 
 				if (GUI.Button (new Rect (100, 250, 150, 25), "Make cube black"))
 					SendCommandToServer ("3");
+				foreach (int i in triggers) {
+					if (GUI.Button (new Rect (100, 275 + 25 * i, 150, 25), "Activate trigger " + i.ToString ()))
+						SendCommandToServer ("T" + i.ToString ());
+				}
 			}
 		}
 		
 		GUI.TextArea (new Rect (250, 100, 300, 300), _messageLog);
 	}
+
+	void UpdateTriggerList (int triggerID)
+	{
+		triggers.Add (triggerID);
+	}
+
 	
 	[RPC]
 	void SendInfoToServer ()
@@ -63,10 +76,14 @@ public class Client : MonoBehaviour
 		someInfo = "Player setted";
 		GetComponent<NetworkView> ().RPC ("ReceiveInfoFromClient", RPCMode.Server, someInfo);
 	}
-	
+
 	[RPC]
 	void ReceiveInfoFromServer (string someInfo)
 	{
+		if (someInfo.StartsWith ("T")) {
+			UpdateTriggerList ((Convert.ToInt32 (someInfo.Substring (1))));
+		}
+
 		_messageLog += someInfo + "\n";
 	}
 	
@@ -76,7 +93,7 @@ public class Client : MonoBehaviour
 	}
 	void OnDisconnectedToServer ()
 	{
-		_messageLog += "Disco from server" + "\n";
+		_messageLog += "Disconnected from server" + "\n";
 	}
 	
 	// fix RPC errors
