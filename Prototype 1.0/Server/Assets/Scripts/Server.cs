@@ -20,7 +20,6 @@ public class Server : MonoBehaviour
 	{
 
 	}
-
 	public void OnGUI ()
 	{
 //		if (Network.peerType == NetworkPeerType.Server) {
