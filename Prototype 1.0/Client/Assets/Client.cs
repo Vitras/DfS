@@ -16,8 +16,9 @@ public class Client : MonoBehaviour
 	void OnGUI ()
 	{
 		if (Network.peerType == NetworkPeerType.Disconnected) {
+			serverIP = GUI.TextArea(new Rect(100, 125, 150, 25), serverIP);
 			if (GUI.Button (new Rect (100, 100, 150, 25), "Connect")) {
-				Network.Connect (serverIP, port);
+				Network.Connect (serverIP ,port);
 			}
 		} else {
 			if (Network.peerType == NetworkPeerType.Client) {
