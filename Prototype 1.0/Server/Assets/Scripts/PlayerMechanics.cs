@@ -6,11 +6,13 @@ public class PlayerMechanics : MonoBehaviour
 	public bool grounded;
 	public float speed;
 	public float jumpHeight;
+	public Vector3 direction; //degrees, 0 is right (cos 0 = x = 1), counter clockwise
 	// Use this for initialization
 	void Start ()
 	{
 		Physics.gravity = new Vector3 (0, -60, 0);
 		speed = 20;
+		direction = Vector3.forward;
 	}
 	
 	// Update is called once per frame
@@ -26,11 +28,15 @@ public class PlayerMechanics : MonoBehaviour
 			float jump = Input.GetAxis ("Jump");
 			velocity.x = speed * Input.GetAxis ("Horizontal");
 			velocity.z = speed * Input.GetAxis ("Vertical");
-			if (jump > 0.1f) {
-				velocity.y = jumpHeight;
-				grounded = false;
+			if (velocity.x != 0 || velocity.z != 0) {
+				direction = new Vector3 (velocity.x, 0, velocity.z).normalized;
+				transform.rotation = Quaternion.LookRotation (direction);
+				if (jump > 0.1f) {
+					velocity.y = jumpHeight;
+					grounded = false;
+				}
+				body.velocity = velocity;
 			}
-			body.velocity = velocity;
 		} else {
 			if (Mathf.Abs (body.velocity.y) < 0.5f && CheckGround (body.position))
 				grounded = true;
