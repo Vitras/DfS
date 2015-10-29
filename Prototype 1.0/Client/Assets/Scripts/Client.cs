@@ -32,6 +32,11 @@ public class Client : MonoBehaviour
 		GameObject.Find("TitleText").GetComponent<Text>().text = "Connecting to " + serverIP +"  ........";
 
 	}
+
+	public void DisconnectFromServer()
+	{
+		Network.Disconnect();
+	}
 	
 
 	/*
@@ -145,6 +150,7 @@ public class Client : MonoBehaviour
 		{
 			Debug.Log("Successfully disconnected from the server");
 			Application.LoadLevel("Main");
+			Destroy(transform.gameObject);
 		}
 	} 
 	
