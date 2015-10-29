@@ -10,37 +10,46 @@ public class PlayerMechanics : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		Physics.gravity = new Vector3 (0, -60, 0);
-		speed = 20;
+		Physics.gravity = new Vector3 (0, -40, 0);
 		direction = Vector3.forward;
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
-		Rigidbody body = this.GetComponent<Rigidbody> ();
-		Vector3 velocity = body.velocity;
+		Rigidbody body = GetComponent<Rigidbody>();
 		if (grounded) {			
-			if (Mathf.Abs (body.velocity.y) > 0.5f) {
+			if (Mathf.Abs (body.velocity.y) > 0.2f) {
 				grounded = false;
 				return;
 			}
 			float jump = Input.GetAxis ("Jump");
-			velocity.x = speed * Input.GetAxis ("Horizontal");
-			velocity.z = speed * Input.GetAxis ("Vertical");
-			if (velocity.x != 0 || velocity.z != 0) {
-				direction = new Vector3 (velocity.x, 0, velocity.z).normalized;
-				transform.rotation = Quaternion.LookRotation (direction);
+			Move();			
+			transform.LookAt (transform.position + direction);
 				if (jump > 0.1f) {
-					velocity.y = jumpHeight;
 					grounded = false;
-				}
-				body.velocity = velocity;
+				direction.y = jumpHeight;
 			}
-		} else {
+			body.velocity = direction * Time.deltaTime;
+			}
+		else {
 			if (Mathf.Abs (body.velocity.y) < 0.5f && CheckGround (body.position))
 				grounded = true;
 		}	
+	}
+
+	void Move()
+	{
+		GameObject camera = GameObject.Find("Main Camera");
+		Vector3 forward = camera.transform.TransformDirection(Vector3.forward);
+		forward.y = 0;
+		forward = forward.normalized;
+		Vector3 right  = new Vector3(forward.z, 0, -forward.x);
+		float h = Input.GetAxis("Horizontal");
+		float v = Input.GetAxis("Vertical");
+		
+		direction  = (h * right  + v * forward);
+		direction *= speed;
 	}
 
 	bool CheckGround (Vector3 origin)

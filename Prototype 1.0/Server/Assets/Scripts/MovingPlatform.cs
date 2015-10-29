@@ -13,7 +13,7 @@ public class MovingPlatform : MonoBehaviour
 	void Start ()
 	{
 		moving = false;
-		originalPosition = transform.position;
+		originalPosition = transform.position - SineModifier ();
 	}
 	
 	// Update is called once per frame
