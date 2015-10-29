@@ -1,33 +1,79 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CameraBehaviour : MonoBehaviour
-{
-
-	public GameObject followTarget;
-	public Vector3 offsetX;
-	public Vector3 offsetY;
-	public Quaternion rotation;
-	public float height;
-	public float distance;
-	public float turnSpeed;
+[AddComponentMenu("Camera-Control/Mouse Orbit with zoom")]
+public class CameraBehaviour : MonoBehaviour {
+	
+	public Transform target;
+	public float distance = 5.0f;
+	public float xSpeed = 120.0f;
+	public float ySpeed = 120.0f;
+	
+	public float yMinLimit = -20f;
+	public float yMaxLimit = 80f;
+	
+	public float distanceMin = .5f;
+	public float distanceMax = 15f;
+	
+	private Rigidbody rigidbody;
+	
+	float x = 0.0f;
+	float y = 0.0f;
+	
 	// Use this for initialization
-	void Start ()
+	void Start () 
 	{
-		offsetX = new Vector3(0, height, distance);
-		offsetY = new Vector3(0, 0, distance);
+		Vector3 angles = transform.eulerAngles;
+		x = angles.y;
+		y = angles.x;
+		
+		rigidbody = GetComponent<Rigidbody>();
+		
+		// Make the rigid body not change rotation
+		if (rigidbody != null)
+		{
+			rigidbody.freezeRotation = true;
+		}
 	}
 	
-	// Update is called once per frame
-	void Update ()
+	void LateUpdate () 
 	{
-		float finalAngle = followTarget.transform.eulerAngles.y;
-		rotation = Quaternion.Euler (0, finalAngle, 0);
-		offsetX = Quaternion.AngleAxis (Input.GetAxis ("CameraHorizontal") * turnSpeed, Vector3.up) * offsetX;
-		offsetY = Quaternion.AngleAxis (Input.GetAxis ("CameraVertical") * turnSpeed, Vector3.right) * offsetY;
-		//offset += new Vector3 (0, Input.GetAxis ("CameraVertical"), 0) * 0.2f;
-		transform.position = followTarget.transform.position + offsetX + offsetY;
-		transform.LookAt (followTarget.transform);
+		if (target) 
+		{
+			x += Input.GetAxis("CameraHorizontal") * xSpeed * distance * Time.deltaTime;
+			y -= Input.GetAxis("CameraVertical") * ySpeed * Time.deltaTime;
+			
+			y = ClampAngle(y, yMinLimit, yMaxLimit);
+			
+			Quaternion rotation = Quaternion.Euler(y, x, 0);
 
+			int distanceSet;
+			distanceSet = 0;
+			if(Input.GetKey(KeyCode.Joystick1Button1))
+				distanceSet += 1;
+			if(Input.GetKey (KeyCode.Joystick1Button2))
+				distanceSet -= 1;
+			distance = Mathf.Clamp(distance - distanceSet*5*Time.deltaTime, distanceMin, distanceMax);
+			
+			RaycastHit hit;
+			if (Physics.Linecast (target.position, transform.position, out hit)) 
+			{
+				distance -=  hit.distance;
+			}
+			Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
+			Vector3 position = rotation * negDistance + target.position;
+			
+			transform.rotation = rotation;
+			transform.position = position;
+		}
+	}
+	
+	public static float ClampAngle(float angle, float min, float max)
+	{
+		if (angle < -360F)
+			angle += 360F;
+		if (angle > 360F)
+			angle -= 360F;
+		return Mathf.Clamp(angle, min, max);
 	}
 }
