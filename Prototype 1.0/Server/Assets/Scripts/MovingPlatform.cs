@@ -27,6 +27,14 @@ public class MovingPlatform : MonoBehaviour
 		}
 	}
 
+	void OnCollisionEnter(Collision col)
+	{
+		if(col.gameObject.name == "Goal")
+		{
+			GameObject.Find ("EnvironmentManager").GetComponent<Environment>().GoalReached();
+		}
+	}
+
 	Vector3 SineModifier ()
 	{
 		//print (amplitude * (Mathf.Sin (period * t)));
