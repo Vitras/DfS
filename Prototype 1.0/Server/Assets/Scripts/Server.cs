@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,14 +7,17 @@ using UnityEngine.Networking;
 
 public class Server : MonoBehaviour
 {
+	NetworkPlayer server;
 	private int port = 25000;
 	private int playerCount = 0;
 	private string _messageLog = "";
 	
 	void Start ()
 	{
-		if (Network.peerType == NetworkPeerType.Disconnected)
+		if (Network.peerType == NetworkPeerType.Disconnected) {
 			Network.InitializeServer (10, port, false);
+			GameObject.Find ("Ipaddress indicator").GetComponent<Text> ().text = server.ipAddress;//Network.connectionTesterIP;
+		}
 	}
 	
 	void Update ()
