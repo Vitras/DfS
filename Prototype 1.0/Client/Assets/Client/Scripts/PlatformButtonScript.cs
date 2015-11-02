@@ -20,9 +20,9 @@ public class PlatformButtonScript : MonoBehaviour {
 	{
 		if(IdleGameController.GetComponent<IdleGameControllerScript>().Currency >= cost)
 		{
-			GameObject.Find("ConnectionManager").GetComponent<Client>().SendCommandToServer(command);
-			Debug.Log("sent command: " + command.ToString());
+			GameObject.Find("NetworkManager").GetComponent<NetworkScript>().SendCommandToServer(command);
 			IdleGameController.GetComponent<IdleGameControllerScript>().Currency -= cost;
+			Debug.Log("sent command: " + command.ToString());
 		}
 		else
 		{

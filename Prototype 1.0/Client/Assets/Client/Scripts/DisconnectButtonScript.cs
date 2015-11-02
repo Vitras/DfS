@@ -18,7 +18,7 @@ public class DisconnectButtonScript : MonoBehaviour {
 
 	public void Disconnect()
 	{
-		GameObject.Find("ConnectionManager").GetComponent<Client>().DisconnectFromServer();
+		GameObject.Find("NetworkManager").GetComponent<NetworkScript>().DisconnectFromServer();
 	}
 }
 

@@ -8,7 +8,7 @@ public class EnvironmentTriggers : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		int x = 0;
+		//int x = 0;
 	}
 	
 	// Update is called once per frame

@@ -11,6 +11,18 @@ public class ColorSwitch : MonoBehaviour
 		mat = this.GetComponent<Renderer> ().material;
 		setter = 2;
 	}
+
+	public void increment()
+	{
+		if(setter < 3)
+		{
+			setter++;
+		}
+		else
+		{
+			setter = 0;
+		}
+	}
 	
 	// Update is called once per frame
 	void Update ()

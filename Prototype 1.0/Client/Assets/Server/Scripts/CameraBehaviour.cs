@@ -15,7 +15,7 @@ public class CameraBehaviour : MonoBehaviour {
 	public float distanceMin = .5f;
 	public float distanceMax = 15f;
 	
-	private Rigidbody rigidbody;
+	private Rigidbody rigidbodyComponent;
 	
 	float x = 0.0f;
 	float y = 0.0f;
@@ -27,12 +27,12 @@ public class CameraBehaviour : MonoBehaviour {
 		x = angles.y;
 		y = angles.x;
 		
-		rigidbody = GetComponent<Rigidbody>();
+		rigidbodyComponent = GetComponent<Rigidbody>();
 		
 		// Make the rigid body not change rotation
-		if (rigidbody != null)
+		if (rigidbodyComponent != null)
 		{
-			rigidbody.freezeRotation = true;
+			rigidbodyComponent.freezeRotation = true;
 		}
 	}
 	
