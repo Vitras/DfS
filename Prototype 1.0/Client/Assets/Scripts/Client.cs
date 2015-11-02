@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class Client : MonoBehaviour
 {
@@ -12,7 +13,33 @@ public class Client : MonoBehaviour
 	string someInfo = "";
 	private NetworkPlayer _myNetworkPlayer;	
 	public List<int> triggers;
+
+	//temp testing variables
+	int colorSwap = 0;
+
+	//Do not get rid of the networking when changing scene
+	void Awake()
+	{
+		DontDestroyOnLoad(transform.gameObject);
+	}
+
+
+	public void ConnectToServer()
+	{
+		Debug.Log("trying to connect...");
+		serverIP = GameObject.Find("InputField").GetComponentsInChildren<Text>()[1].text;
+		Network.Connect(serverIP,port);
+		GameObject.Find("TitleText").GetComponent<Text>().text = "Connecting to " + serverIP +"  ........";
+
+	}
+
+	public void DisconnectFromServer()
+	{
+		Network.Disconnect();
+	}
 	
+
+	/*
 	void OnGUI ()
 	{
 		if (Network.peerType == NetworkPeerType.Disconnected) {
@@ -50,6 +77,7 @@ public class Client : MonoBehaviour
 		
 		GUI.TextArea (new Rect (250, 100, 300, 300), _messageLog);
 	}
+	*/
 
 	void UpdateTriggerList (int triggerID)
 	{
@@ -65,11 +93,22 @@ public class Client : MonoBehaviour
 	}
 
 	[RPC]
-	void SendCommandToServer (string command)
+	public void SendCommandToServer (string command)
 	{
 		someInfo = command;
 		GetComponent<NetworkView> ().RPC ("ReceiveInfoFromClient", RPCMode.Server, someInfo);
 	}
+
+	[RPC]
+	public void SendColorSwapCommandToServer ()
+	{
+		someInfo = colorSwap.ToString();
+		GetComponent<NetworkView> ().RPC ("ReceiveInfoFromClient", RPCMode.Server, someInfo);
+		colorSwap++;
+		if (colorSwap == 4)
+			colorSwap = 0;
+	}
+
 	[RPC]
 	void SetPlayerInfo (NetworkPlayer player)
 	{
@@ -91,11 +130,29 @@ public class Client : MonoBehaviour
 	void OnConnectedToServer ()
 	{
 		_messageLog += "Connected to server" + "\n";
+		Debug.Log("Connected to server");
+		Application.LoadLevel("InGame");
 	}
 	void OnDisconnectedToServer ()
 	{
+		Application.LoadLevel("Main");
 		_messageLog += "Disconnected from server" + "\n";
 	}
+
+	void OnDisconnectedFromServer(NetworkDisconnection info) 
+	{
+		if (info == NetworkDisconnection.LostConnection)
+		{
+				Debug.Log("Lost connection to the server");
+				Application.LoadLevel("Main");
+		}
+		else
+		{
+			Debug.Log("Successfully disconnected from the server");
+			Application.LoadLevel("Main");
+			Destroy(transform.gameObject);
+		}
+	} 
 	
 	// fix RPC errors
 	[RPC]
