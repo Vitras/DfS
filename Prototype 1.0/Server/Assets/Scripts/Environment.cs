@@ -6,7 +6,7 @@ public class Environment : MonoBehaviour {
 	public GameObject canvas;
 	// Use this for initialization
 	void Start () {
-		canvas.SetActive (false);
+		canvas.SetActive (true);
 	}
 	
 	// Update is called once per frame
