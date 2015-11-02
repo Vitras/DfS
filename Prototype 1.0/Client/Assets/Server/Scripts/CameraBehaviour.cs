@@ -2,7 +2,8 @@
 using System.Collections;
 
 [AddComponentMenu("Camera-Control/Mouse Orbit with zoom")]
-public class CameraBehaviour : MonoBehaviour {
+public class CameraBehaviour : MonoBehaviour
+{
 	
 	public Transform target;
 	public float distance = 5.0f;
@@ -15,52 +16,49 @@ public class CameraBehaviour : MonoBehaviour {
 	public float distanceMin = .5f;
 	public float distanceMax = 15f;
 	
-	private Rigidbody rigidbodyComponent;
+	private Rigidbody rigidbody;
 	
 	float x = 0.0f;
 	float y = 0.0f;
 	
 	// Use this for initialization
-	void Start () 
+	void Start ()
 	{
 		Vector3 angles = transform.eulerAngles;
 		x = angles.y;
 		y = angles.x;
 		
-		rigidbodyComponent = GetComponent<Rigidbody>();
+		rigidbody = GetComponent<Rigidbody> ();
 		
 		// Make the rigid body not change rotation
-		if (rigidbodyComponent != null)
-		{
-			rigidbodyComponent.freezeRotation = true;
+		if (rigidbody != null) {
+			rigidbody.freezeRotation = true;
 		}
 	}
 	
-	void LateUpdate () 
+	void LateUpdate ()
 	{
-		if (target) 
-		{
-			x += Input.GetAxis("CameraHorizontal") * xSpeed * distance * Time.deltaTime;
-			y -= Input.GetAxis("CameraVertical") * ySpeed * Time.deltaTime;
+		if (target) {
+			x += Input.GetAxis ("CameraHorizontal") * xSpeed * distance * Time.deltaTime;
+			y -= Input.GetAxis ("CameraVertical") * ySpeed * Time.deltaTime;
 			
-			y = ClampAngle(y, yMinLimit, yMaxLimit);
+			y = ClampAngle (y, yMinLimit, yMaxLimit);
 			
-			Quaternion rotation = Quaternion.Euler(y, x, 0);
+			Quaternion rotation = Quaternion.Euler (y, x, 0);
 
 			int distanceSet;
 			distanceSet = 0;
-			if(Input.GetKey(KeyCode.Joystick1Button1))
+			if (Input.GetKey (KeyCode.JoystickButton1))
 				distanceSet += 1;
-			if(Input.GetKey (KeyCode.Joystick1Button2))
+			if (Input.GetKey (KeyCode.JoystickButton2))
 				distanceSet -= 1;
-			distance = Mathf.Clamp(distance - distanceSet*5*Time.deltaTime, distanceMin, distanceMax);
+			distance = Mathf.Clamp (distance - distanceSet * 5 * Time.deltaTime, distanceMin, distanceMax);
 			
 			RaycastHit hit;
-			if (Physics.Linecast (target.position, transform.position, out hit)) 
-			{
-				distance -=  hit.distance;
+			if (Physics.Linecast (target.position, transform.position, out hit)) {
+				distance -= hit.distance;
 			}
-			Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
+			Vector3 negDistance = new Vector3 (0.0f, 0.0f, -distance);
 			Vector3 position = rotation * negDistance + target.position;
 			
 			transform.rotation = rotation;
@@ -68,12 +66,12 @@ public class CameraBehaviour : MonoBehaviour {
 		}
 	}
 	
-	public static float ClampAngle(float angle, float min, float max)
+	public static float ClampAngle (float angle, float min, float max)
 	{
 		if (angle < -360F)
 			angle += 360F;
 		if (angle > 360F)
 			angle -= 360F;
-		return Mathf.Clamp(angle, min, max);
+		return Mathf.Clamp (angle, min, max);
 	}
 }

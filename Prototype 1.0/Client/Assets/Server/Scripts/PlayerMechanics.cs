@@ -30,7 +30,7 @@ public class PlayerMechanics : MonoBehaviour
 					grounded = false;
 				direction.y = jumpHeight;
 			}
-			body.velocity = direction * Time.deltaTime;
+			body.velocity = direction;
 			}
 		else {
 			if (Mathf.Abs (body.velocity.y) < 0.5f && CheckGround (body.position))
@@ -51,17 +51,26 @@ public class PlayerMechanics : MonoBehaviour
 		direction  = (h * right  + v * forward);
 		direction *= speed;
 	}
+	
+	
+	void OnCollisionEnter(Collision col)
+	{
+		if(col.gameObject.name == "Goal")
+		{
+			GameObject.Find ("EnvironmentManager").GetComponent<Environment>().GoalReached();
+		}
+	}
 
 	bool CheckGround (Vector3 origin)
 	{
 		Vector3 size = this.GetComponent<MeshFilter> ().mesh.bounds.size;
-		Debug.DrawRay (origin, Vector3.down * 2, Color.red, 5);
-		Debug.DrawRay (origin + new Vector3 (size.x * 2, 0, 0), Vector3.down * 2, Color.red, 5);
-		Debug.DrawRay (origin + new Vector3 (-size.x * 2, 0, 0), Vector3.down * 2, Color.red, 5);
-		Debug.DrawRay (origin + new Vector3 (0, 0, size.z * 2), Vector3.down * 2, Color.red, 5);
-		Debug.DrawRay (origin + new Vector3 (0, 0, -size.z * 2), Vector3.down * 2, Color.red, 5);
-		return Physics.Raycast (origin, Vector3.down, 2) || Physics.Raycast (origin + new Vector3 (size.x * 2, 0, 0), Vector3.down, 2) ||
-			Physics.Raycast (origin + new Vector3 (-size.x * 2, 0, 0), Vector3.down, 2) || Physics.Raycast (origin + new Vector3 (0, 0, size.z * 2), Vector3.down, 2)
-			|| Physics.Raycast (origin + new Vector3 (0, 0, -size.z * 2), Vector3.down, 2);
+		Debug.DrawRay (origin, Vector3.down * 2.5f, Color.red, 5);
+		Debug.DrawRay (origin + new Vector3 (size.x * 2, 0, 0), Vector3.down * 2.5f, Color.red, 5);
+		Debug.DrawRay (origin + new Vector3 (-size.x * 2, 0, 0), Vector3.down * 2.5f, Color.red, 5);
+		Debug.DrawRay (origin + new Vector3 (0, 0, size.z * 2), Vector3.down * 2.5f, Color.red, 5);
+		Debug.DrawRay (origin + new Vector3 (0, 0, -size.z * 2), Vector3.down * 2.5f, Color.red, 5);
+		return Physics.Raycast (origin, Vector3.down, 2.5f ) || Physics.Raycast (origin + new Vector3 (size.x * 2, 0, 0), Vector3.down, 2.5f) ||
+			Physics.Raycast (origin + new Vector3 (-size.x * 2, 0, 0), Vector3.down, 2.5f) || Physics.Raycast (origin + new Vector3 (0, 0, size.z * 2), Vector3.down, 2.5f)
+			|| Physics.Raycast (origin + new Vector3 (0, 0, -size.z * 2), Vector3.down, 2.5f);
 	}
 }
