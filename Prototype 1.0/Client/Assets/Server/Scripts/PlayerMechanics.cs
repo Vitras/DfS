@@ -59,7 +59,18 @@ public class PlayerMechanics : MonoBehaviour
 		{
 			GameObject.Find ("EnvironmentManager").GetComponent<Environment>().GoalReached();
 		}
+		else if(col.gameObject.tag == "Moving Platform")
+		{
+			transform.SetParent (col.gameObject.transform.parent);
+		}
 	}
+
+	void OnCollisionExit(Collision col)
+	{
+		if(col.gameObject.tag == "Moving Platform")
+		transform.SetParent(null);
+	}
+
 
 	bool CheckGround (Vector3 origin)
 	{
