@@ -9,34 +9,47 @@ using UnityEngine.UI;
 public class Server : MonoBehaviour
 {
 	private int port = 25000;
-	public short commandMessageId = 1000;
+	private Dictionary<string,ServerSidePlayer> players;
+	public Text eventFeed;
+	public Text IpIndicator;
 	
 	void Start ()
 	{
+		//create dictionary for players
+		players = new Dictionary<string,ServerSidePlayer>();
+		//Start the server
 		NetworkServer.Listen (port);
+		//Add listener for onconnect messages from clients
 		NetworkServer.RegisterHandler (MsgType.Connect, OnConnected);
-		NetworkServer.RegisterHandler (commandMessageId, OnReceiveCommand);
+		//listener for commands from clients
+		NetworkServer.RegisterHandler (Messages.commandMessageId, OnReceiveCommand);
+		//listener for initial client messages with their data
+		NetworkServer.RegisterHandler (Messages.initialMessageId,OnReceiveInitialMessage);
 		Debug.Log ("Server started");
-		GameObject.Find ("Ipaddress Indicator").GetComponent<Text> ().text = Network.player.ipAddress;
+		//Populate the ip address indicator and event feed
+		IpIndicator.text = Network.player.ipAddress;
+		eventFeed.text = "Important updates will appear here!";
 	}
-	
-	void Update ()
-	{
 
-	}
 
 	void OnConnected (NetworkMessage netMsg)
 	{
-		//AskClientForInfo (player);
-		//SendTriggersToClient ();
-		//
-		Debug.Log ("Player connected" + netMsg.conn);
+		Debug.Log ("A Player connected");
 	}
 
-	public void OnReceiveCommand (NetworkMessage msg)
+	void OnReceiveInitialMessage(NetworkMessage netMsg)
 	{
-		var netMsg = msg.ReadMessage<StringMessage> ();
-		string command = netMsg.value;
+		var msg = netMsg.ReadMessage<Messages.InitialMessage>();
+		ServerSidePlayer p = new ServerSidePlayer(msg.username);
+		players.Add(msg.ip,p);
+		Debug.Log("Added player: " + msg.username + "with ip: " + msg.ip + " To the playerlog.");
+		eventFeed.text = msg.username + " joined the game!";
+	}
+
+	public void OnReceiveCommand (NetworkMessage netMsg)
+	{
+		var msg = netMsg.ReadMessage<Messages.CommandMessage> ();
+		string command = msg.command;
 		Debug.Log ("received command:" + command);
 
 		if (command.StartsWith ("T")) {
@@ -51,4 +64,15 @@ public class Server : MonoBehaviour
 
 
 
+}
+
+public class ServerSidePlayer
+{
+	public string userName;
+	//room for more here
+
+	public ServerSidePlayer(string UN)
+	{
+		userName = UN;
+	}
 }

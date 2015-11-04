@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Networking;
 using System;
 using System.Collections;
@@ -12,7 +12,6 @@ public class NetworkScript : MonoBehaviour
 	public string serverIP;
 	public int port = 25000;
 	public NetworkClient client;
-	public short commandMessageId = 1000;
 
 	// Use this for initialization
 	void Awake ()
@@ -20,12 +19,7 @@ public class NetworkScript : MonoBehaviour
 		serverIP = "127.0.0.1";
 		DontDestroyOnLoad (transform.gameObject);
 	}
-	
-	// Update is called once per frame
-	void Update ()
-	{
-	
-	}
+
 
 	public void ConnectToServer ()
 	{
@@ -44,30 +38,25 @@ public class NetworkScript : MonoBehaviour
 		
 	}
 
-//	public void DisconnectFromServer()
-//	{
-//		client.Disconnect();
-//		Debug.Log("Disconnected from server.");
-//		Application.LoadLevel("Main");
-//		Destroy(transform.gameObject);
-//	}
 
 	public void OnConnected (NetworkMessage netMsg)
 	{
 		Debug.Log ("Connected to server");
+		var msg = new Messages.InitialMessage();
+		msg.ip = Network.player.ipAddress;
+		msg.username = GameObject.Find ("UserNameField").GetComponentsInChildren<Text> () [1].text;
+		client.Send(Messages.initialMessageId,msg);
 		Application.LoadLevel ("InGame");
-	}
-
-	public void OnError (NetworkMessage netMsg)
-	{
-		//doNothing
 	}
 
 	public void SendCommandToServer (string command)
 	{
-		var msg = new StringMessage (command);
-		client.Send (commandMessageId, msg);
-		Debug.Log ("Command sent: " + command + "with message id: " + commandMessageId.ToString ());
+		var msg = new Messages.CommandMessage();
+		msg.command = command;
+		client.Send(Messages.commandMessageId,msg);
+		Debug.Log ("Command sent: " + command + "with message id: " + Messages.commandMessageId);
 	}
 
 }
+
+
