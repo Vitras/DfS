@@ -15,6 +15,7 @@ public class Messages
 
 	public class CommandMessage : MessageBase
 	{
+		public string ip;
 		public string command;
 	}
 

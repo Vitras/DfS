@@ -23,7 +23,10 @@ public class DisconnectButtonScript : MonoBehaviour
 
 	public void Disconnect ()
 	{
-		//GameObject.Find("NetworkManager").GetComponent<NetworkScript>().DisconnectFromServer();
+		NetworkScript nwm = GameObject.Find("NetworkManager").GetComponent<NetworkScript>();
+		nwm.client.Disconnect();
+		Application.LoadLevel("Main");
+		Destroy(nwm.transform.gameObject);
 	}
 }
 

@@ -31,6 +31,10 @@ public class Server : MonoBehaviour
 		eventFeed.text = "Important updates will appear here!";
 	}
 
+	void OnApplicationQuit()
+	{
+		NetworkServer.DisconnectAll();
+	}
 
 	void OnConnected (NetworkMessage netMsg)
 	{
@@ -48,7 +52,7 @@ public class Server : MonoBehaviour
 
 	public void OnReceiveCommand (NetworkMessage netMsg)
 	{
-		var msg = netMsg.ReadMessage<Messages.CommandMessage> ();
+		var msg = netMsg.ReadMessage<Messages.CommandMessage>();
 		string command = msg.command;
 		Debug.Log ("received command:" + command);
 
@@ -59,12 +63,22 @@ public class Server : MonoBehaviour
 		}
 		if (command == "0") {
 			GameObject.Find ("Player").GetComponent<ColorSwitch> ().increment ();
-		}
+		};
+		eventFeed.text = GetUsernameByIp(msg.ip) + " just activated command " + command; 
+	}
+
+	//supporting functions
+	public string GetUsernameByIp(string ip)
+	{
+		ServerSidePlayer p;
+		players.TryGetValue(ip,out p);
+		return p.userName;
 	}
 
 
-
 }
+
+//supporting classes
 
 public class ServerSidePlayer
 {
