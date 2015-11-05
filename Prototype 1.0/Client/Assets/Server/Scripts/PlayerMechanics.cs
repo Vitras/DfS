@@ -17,6 +17,19 @@ public class PlayerMechanics : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+		if(Input.GetKeyDown(KeyCode.JoystickButton0))
+		{
+			RaycastHit hit = new RaycastHit();
+			if(Physics.Raycast (transform.position, direction, out hit, 15))
+			{
+				if(hit.collider.tag == "Interactable" && hit.collider.gameObject.GetComponent<Leverswitch>().Active)
+				{
+					hit.collider.gameObject.GetComponent<Leverswitch>().Switched = !hit.collider.gameObject.GetComponent<Leverswitch>().Switched;
+					hit.collider.gameObject.GetComponent<Leverswitch>().Active = false;
+					GameObject.Find ("EnvironmentManager").GetComponent<Environment>().CheckObjectives();
+				}
+			}
+		}
 		Rigidbody body = GetComponent<Rigidbody>();
 		if (grounded) {			
 			if (Mathf.Abs (body.velocity.y) > 0.2f) {
@@ -57,7 +70,7 @@ public class PlayerMechanics : MonoBehaviour
 	{
 		if(col.gameObject.name == "Goal")
 		{
-			GameObject.Find ("EnvironmentManager").GetComponent<Environment>().GoalReached();
+			GameObject.Find ("EnvironmentManager").GetComponent<Environment>().CheckObjectives();
 		}
 		else if(col.gameObject.tag == "Moving Platform")
 		{
