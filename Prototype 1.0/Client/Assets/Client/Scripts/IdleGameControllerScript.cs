@@ -34,6 +34,7 @@ public class IdleGameControllerScript : MonoBehaviour {
 
 	}
 
+
 	public int Currency
 	{
 		get {return currency;}

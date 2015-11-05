@@ -55,16 +55,17 @@ public class Server : MonoBehaviour
 		var msg = netMsg.ReadMessage<Messages.CommandMessage>();
 		string command = msg.command;
 		Debug.Log ("received command:" + command);
-
+		eventFeed.text = GetUsernameByIp(msg.ip) + " just activated command " + command;
 		if (command.StartsWith ("T")) {
 			int trigger = Convert.ToInt32 (command.Substring (1));
 			GameObject.Find ("EnvironmentManager").GetComponent<EnvironmentTriggers> ().Trigger (trigger);
 			return;
 		}
-		if (command == "0") {
+		if (command == "0") 
+		{
 			GameObject.Find ("Player").GetComponent<ColorSwitch> ().increment ();
-		};
-		eventFeed.text = GetUsernameByIp(msg.ip) + " just activated command " + command; 
+		} 
+		//
 	}
 
 	//supporting functions
