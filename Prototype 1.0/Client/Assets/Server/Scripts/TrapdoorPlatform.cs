@@ -11,38 +11,73 @@ public class TrapdoorPlatform : MonoBehaviour
 	float currentTime;
 	public GameObject left;
 	public GameObject right;
+	private bool lengthWise;
 	Vector3 rightTurningPoint;
 	Vector3 leftTurningPoint;
 	// Use this for initialization
 	void Start ()
 	{
 		Vector3 size = right.transform.lossyScale;
+		lengthWise = transform.eulerAngles.y == 90;
+		if(lengthWise)
+		{
 		rightTurningPoint = transform.localPosition + new Vector3 (size.x, 0, 0);
 		leftTurningPoint = transform.localPosition - new Vector3 (size.x, 0, 0);
+		}
+		else
+		{
+			rightTurningPoint = transform.localPosition - new Vector3(0, 0, size.z);
+			leftTurningPoint = transform.localPosition + new Vector3(0, 0, size.z);
+		}
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
+		
+		Debug.DrawRay(rightTurningPoint, Vector3.down * 2, Color.magenta, 60);
+		Debug.DrawRay(leftTurningPoint, Vector3.down * 2, Color.magenta, 60);
 		if (active) {
-			if (currentTime <= 0) {
-				if (opening) {
-					right.transform.RotateAround (rightTurningPoint, Vector3.forward, 1);
-					left.transform.RotateAround (leftTurningPoint, Vector3.back, 1);
-					if (left.transform.eulerAngles.x >= 90) {
-						opening = false;
-						currentTime = openTime;
-					}
-				} else {
-					right.transform.RotateAround (rightTurningPoint, Vector3.back, 1);
-					left.transform.RotateAround (leftTurningPoint, Vector3.forward, 1);
-					if (Mathf.Abs (left.transform.eulerAngles.x) < 0.5) {
-						opening = true;
-						currentTime = closeTime;
-					}
-				} 
-			} else
-				currentTime -= Time.deltaTime;
+			if (lengthWise) {
+				if (currentTime <= 0) {
+					if (opening) {
+						right.transform.RotateAround (rightTurningPoint, Vector3.forward, 1);
+						left.transform.RotateAround (leftTurningPoint, Vector3.back, 1);
+						if (Mathf.Abs (right.transform.eulerAngles.z) >= 90) {
+							opening = false;
+							currentTime = openTime;
+						}
+					} else {
+						right.transform.RotateAround (rightTurningPoint, Vector3.back, 1);
+						left.transform.RotateAround (leftTurningPoint, Vector3.forward, 1);
+						if (Mathf.Abs (left.transform.eulerAngles.z) < 0.5) {
+							opening = true;
+							currentTime = closeTime;
+						}
+					} 
+				} else
+					currentTime -= Time.deltaTime;
+			}
+			else
+			{if (currentTime <= 0) {
+					if (opening) {
+						right.transform.RotateAround (rightTurningPoint, Vector3.right, 1);
+						left.transform.RotateAround (leftTurningPoint, Vector3.left, 1);
+						if (Mathf.Abs (right.transform.eulerAngles.z) >= 90) {
+							opening = false;
+							currentTime = openTime;
+						}
+					} else {
+						right.transform.RotateAround (rightTurningPoint, Vector3.left, 1);
+						left.transform.RotateAround (leftTurningPoint, Vector3.right, 1);
+						if (Mathf.Abs (left.transform.eulerAngles.z) < 0.5) {
+							opening = true;
+							currentTime = closeTime;
+						}
+					} 
+				} else
+					currentTime -= Time.deltaTime;
+			}
 		}
 	}
 }
