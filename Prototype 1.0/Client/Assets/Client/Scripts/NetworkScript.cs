@@ -13,6 +13,7 @@ public class NetworkScript : MonoBehaviour
 	public int port = 25000;
 	public NetworkClient client;
 	public string myIp;
+	public int points;
 
 	// Use this for initialization
 	void Awake ()
@@ -20,6 +21,7 @@ public class NetworkScript : MonoBehaviour
 		serverIP = "127.0.0.1";
 		DontDestroyOnLoad (transform.gameObject);
 		myIp = Network.player.ipAddress;
+		points = 100;
 	}
 
 
