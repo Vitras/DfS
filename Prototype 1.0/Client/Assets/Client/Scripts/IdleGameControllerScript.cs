@@ -3,23 +3,24 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class IdleGameControllerScript : MonoBehaviour {
-
-	private int currency;
+	
 	public Text currencyCounter;
 	public GameObject collectable;
+	private GameObject networkManager;
+	private NetworkScript network;
 
 	// Use this for initialization
 	void Start () 
 	{
-		currency = 100;
 		InvokeRepeating("EverySecond",0,1);
-
+		networkManager = GameObject.Find("NetworkManager");
+		network = networkManager.GetComponent<NetworkScript>();
 	}
 
 	void EverySecond()
 	{
-		currency += 1;
-		currencyCounter.text = currency.ToString();
+		network.points += 1;
+		currencyCounter.text = network.points.ToString();
 		int random = Random.Range(0,11);
 		if(random == 10)
 		{
@@ -34,13 +35,18 @@ public class IdleGameControllerScript : MonoBehaviour {
 
 	}
 
+	public void GoToReactionGame()
+	{
+		Application.LoadLevel("ReactionGame");
+	}
+
 	public int Currency
 	{
-		get {return currency;}
+		get {return network.points;}
 		set
 		{
-			currency = value;
-			currencyCounter.text = currency.ToString();
+			network.points = value;
+			currencyCounter.text = network.points.ToString();
 		}
 	}
 }

@@ -21,6 +21,7 @@ public class DisconnectButtonScript : MonoBehaviour
 	
 	}
 
+
 	public void Disconnect ()
 	{
 		NetworkScript nwm = GameObject.Find("NetworkManager").GetComponent<NetworkScript>();

@@ -16,11 +16,16 @@ public class PowerupScript : MonoBehaviour {
 		Vector3 pos = this.transform.position;
 		pos.x++;
 		this.transform.position = pos;
+
+		if(this.transform.position.x > 500)
+		{
+			Destroy(transform.gameObject);
+		}
 	}
 
 	void OnMouseDown()
 	{
-		GameObject.Find("IdleGameController").GetComponent<IdleGameControllerScript>().Currency += 50;
+		GameObject.Find("IdleGameController").GetComponent<IdleGameControllerScript>().Currency += 20;
 		Destroy(this.gameObject);
 	}
 }
