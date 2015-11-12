@@ -114,20 +114,21 @@ public class ReactionGameControllerScript : MonoBehaviour {
 		Piston.GetComponent<Animator>().Play(0);
 		foreach(GameObject p in spawnedPuddings)
 		{
-			if (p.transform.position.x >= 31 && p.transform.position.x <= 35)
+			PuddingScript script = p.GetComponent<PuddingScript>();
+			if (p.transform.position.x >= 31 && p.transform.position.x <= 35 && script.success == false)
 			{
 				//Debug.Log("got 10 pts for hitting " + spawnedPuddings.IndexOf(p).ToString() + " perfectly");
 				StartCoroutine(TransformPuddingDelay(p));
-				p.GetComponent<PuddingScript>().success = true;
+				script.success = true;
 				StartCoroutine(ChangeHitIndicatorText(0));
 				source.PlayOneShot(pistonSfx);
 				return;
 			}
-			else if(p.transform.position.x >= 27 && p.transform.position.x <= 43)
+			else if(p.transform.position.x >= 27 && p.transform.position.x <= 43 && script.success == false)
 			{
 				//Debug.Log("got 5 pts for hitting " + spawnedPuddings.IndexOf(p).ToString());
 				StartCoroutine(TransformPuddingDelay(p));
-				p.GetComponent<PuddingScript>().success = true;
+				script.success = true;
 				StartCoroutine(ChangeHitIndicatorText(1));
 				source.PlayOneShot(pistonSfx);
 				return;
