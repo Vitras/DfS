@@ -15,7 +15,9 @@ public class CameraBehaviour : MonoBehaviour
 	
 	public float distanceMin = .5f;
 	public float distanceMax = 15f;
-	
+
+	private Quaternion previousRot;
+	private Vector3 previousPos;
 	float x = 0.0f;
 	float y = 0.0f;
 	
@@ -52,18 +54,24 @@ public class CameraBehaviour : MonoBehaviour
 				distanceSet -= 1;
 			distance = Mathf.Clamp (distance - distanceSet * 5 * Time.deltaTime, distanceMin, distanceMax);
 			
-			RaycastHit hit;
-			if (Physics.Linecast (target.position, transform.position, out hit)) {
-				distance -= hit.distance;
-			}
+//			RaycastHit hit;
+//			if (Physics.Linecast (target.position, transform.position, out hit)) {
+//				distance -= hit.distance;
+//			}
 			Vector3 negDistance = new Vector3 (0.0f, 0.0f, -distance);
 			Vector3 position = rotation * negDistance + target.position;
-			
+			previousPos = transform.position;
+			previousRot = transform.rotation;
 			transform.rotation = rotation;
 			transform.position = position;
 		}
 	}
-	
+
+	void OnCollisionEnter ()
+	{
+		transform.position = previousPos;
+		transform.rotation = previousRot;
+	}
 	public static float ClampAngle (float angle, float min, float max)
 	{
 		if (angle < -360F)
