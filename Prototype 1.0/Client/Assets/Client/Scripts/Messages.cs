@@ -6,6 +6,7 @@ public class Messages
 {
 	public const short commandMessageId = 1000;
 	public const short initialMessageId = 1001;
+	public const short clientDisconnectMessageId = 1002;
 
 	public class InitialMessage : MessageBase
 	{
@@ -18,5 +19,11 @@ public class Messages
 		public string ip;
 		public string command;
 	}
+
+	public class ClientDisconnectMessage : MessageBase
+	{
+		public string ip;
+	}
+
 
 }

@@ -68,6 +68,33 @@ public class NetworkScript : MonoBehaviour
 		Debug.Log ("Command sent: " + command + "with message id: " + Messages.commandMessageId);
 	}
 
+	void OnApplicationQuit()
+	{
+		if(client != null)
+		{
+			Application.CancelQuit();
+			Debug.Log ("1 properly disconnected");
+			var msg = new Messages.ClientDisconnectMessage();
+			msg.ip = myIp;
+			client.Send(Messages.clientDisconnectMessageId,msg);
+			StartCoroutine(CloseConnection());
+			Debug.Log ("2 disconnected client");
+			Debug.Log ("3 quit app");
+
+		}
+
+	}
+
+	IEnumerator CloseConnection()
+	{
+		yield return new WaitForSeconds(0.5f);
+		client.Disconnect();
+		client = null;
+		Application.Quit();
+
+	}
+
+
 }
 
 
