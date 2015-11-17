@@ -11,7 +11,7 @@ public class TrapdoorPlatform : MonoBehaviour
 	float currentTime;
 	public GameObject left;
 	public GameObject right;
-	private bool lengthWise;
+	public bool lengthWise;
 	Vector3 rightTurningPoint;
 	Vector3 leftTurningPoint;
 	// Use this for initialization
