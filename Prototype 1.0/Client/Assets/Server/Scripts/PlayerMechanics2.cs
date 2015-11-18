@@ -68,6 +68,21 @@ public class PlayerMechanics2 : MonoBehaviour
 		}
 	}
 
+	void OnTriggerEnter(Collider col)
+	{
+		
+		if(col.gameObject.tag == "Objective A")
+		{
+			GameObject.Find ("EnvironmentManager").GetComponent<Environment>().ScoreRed++;
+			col.gameObject.GetComponent<SphereCollider>().enabled = false;
+
+		}
+		else if(col.gameObject.tag == "Objective B")
+		{
+			GameObject.Find ("EnvironmentManager").GetComponent<Environment>().ScoreBlue++;
+			col.gameObject.GetComponent<SphereCollider>().enabled = false;
+		}
+	}
 	void OnCollisionExit (Collision col)
 	{
 		if (col.gameObject.tag == "Moving Platform")

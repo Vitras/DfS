@@ -9,6 +9,7 @@ public class MovingPlatform : MonoBehaviour
 	public float t;
 	public float amplitude;
 	public float period;
+	public TriggerScript trigger;
 	// Use this for initialization
 	void Start ()
 	{
@@ -19,7 +20,7 @@ public class MovingPlatform : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		if (moving) {
+		if (trigger.Triggered || moving) {
 			t += Time.deltaTime;
 			//if (t > Mathf.PI * 2 * period)
 			//t -= Mathf.PI * 2 * period;

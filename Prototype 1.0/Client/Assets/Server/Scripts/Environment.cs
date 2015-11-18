@@ -12,7 +12,11 @@ public class Environment : MonoBehaviour
 	 */
 
 	int currentObjective;
+	public int ScoreRed {get; set;}
+	public int ScoreBlue{get; set;}
 	public GameObject canvas;
+	public GameObject ScoreRedIndicator;
+	public GameObject ScoreBlueIndicator;
 	public GameObject IWinIndicator;
 	public GameObject ObjectiveIndicator;
 	public GameObject[] objectives;
@@ -22,21 +26,27 @@ public class Environment : MonoBehaviour
 	{
 		canvas.SetActive (true);
 		currentObjective = 0;
-		ActivateObjective ();
+		ScoreRed = 0;
+		ScoreBlue = 0;
+		ScoreRedIndicator.SetActive (true);
+		ScoreBlueIndicator.SetActive (true);
+		//ActivateObjective ();
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
+		ScoreRedIndicator.GetComponent<Text>().text = "Red team: " + ScoreRed.ToString ();
+		ScoreBlueIndicator.GetComponent<Text>().text = "Blue team: " + ScoreBlue.ToString ();
 	}
 
 	public void CheckObjectives ()
 	{
 			currentObjective++;
 			if (currentObjective >= objectives.Length) {
-				WinTheGame ();
+				//WinTheGame ();
 			} else {
-				ActivateObjective ();
+				//ActivateObjective ();
 			}
 	}
 

@@ -13,7 +13,7 @@ public class EnvironmentTriggers : MonoBehaviour
 	// Update is called once per frame
 	public void Trigger (int index)
 	{
-		MovingPlatform trigger = networkTriggers [index].GetComponent<MovingPlatform> ();
-		trigger.moving = !trigger.moving;
+		TriggerScript trigger = networkTriggers [index].GetComponent<TriggerScript> ();
+		trigger.Triggered = !trigger.Triggered;
 	}
 }
