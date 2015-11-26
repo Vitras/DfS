@@ -24,7 +24,7 @@ public class MovingPlatform : MonoBehaviour
 			t += Time.deltaTime;
 			//if (t > Mathf.PI * 2 * period)
 			//t -= Mathf.PI * 2 * period;
-			transform.position = originalPosition + SineModifier ();
+			transform.localPosition = originalPosition + SineModifier ();
 		}
 	}
 
