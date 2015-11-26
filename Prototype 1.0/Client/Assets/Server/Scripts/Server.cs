@@ -14,7 +14,7 @@ public class Server : MonoBehaviour
 	private Dictionary<string,ServerSidePlayer> players;
 	public Text eventFeed;
 	public Text IpIndicator;
-	public enum Team {Red=0,Blue=1};
+	public enum Team {Red=0,Blue=1,None=9}
 	
 	void Start ()
 	{
@@ -54,6 +54,10 @@ public class Server : MonoBehaviour
 		players.Add(msg.ip,p);
 		Debug.Log("Added player: " + msg.username + "with ip: " + msg.ip + " To the playerlog.");
 		eventFeed.text = msg.username + " joined the game on team: "+ balancedTeamChoice.ToString() + " !";
+		//send team message here
+		var teamMsg = new Messages.CommunicateTeamToClientMessage();
+		teamMsg.team = (int)balancedTeamChoice;
+		netMsg.conn.Send(Messages.communicateTeamToClientMessageId,teamMsg);
 	}
 
 	public void OnReceiveCommand (NetworkMessage netMsg)
