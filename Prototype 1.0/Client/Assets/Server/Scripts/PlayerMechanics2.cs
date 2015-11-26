@@ -33,7 +33,7 @@ public class PlayerMechanics2 : MonoBehaviour
 		}
 		float jump = Input.GetAxis ("Jump");
 		Move ();
-		transform.LookAt (transform.position + direction);		
+		transform.LookAt (transform.position + direction);
 		direction.y = body.velocity.y;
 		if (jump > 0.1f && grounded) {
 			grounded = false;

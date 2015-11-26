@@ -1,29 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class RotatingPlatform : MonoBehaviour
-{
+public class Spiral : MonoBehaviour {
+
+	
 	public int triggerID;
 	public bool moving;
 	public Vector3 originalRotation;
+	public Vector3 turningPoint;
 	public float frequency;
-	// Use this for initialization
-	void Start ()
-	{
-		moving = false;
-		originalRotation = transform.localRotation.eulerAngles;
-		//transform.localRotation = Quaternion.Euler (new Vector3(90, 0, 0));
 
+	// Use this for initialization
+	void Start () {		
+		originalRotation = transform.localRotation.eulerAngles;
+		turningPoint = transform.position;	
 	}
 	
 	// Update is called once per frame
-	void Update ()
-	{
+	void Update () {		
 		if (moving && frequency != 0) {
-			transform.Rotate (Vector3.up, 360 * frequency * Time.deltaTime);
-
-			//if (t > Mathf.PI * 2 * period)
-			//t -= Mathf.PI * 2 * period;
+			transform.RotateAround(turningPoint, Vector3.down, frequency * Time.deltaTime);
 		}
 	}
 }

@@ -13,6 +13,7 @@ public class NormalEffect : MovementEffect {
 	public float stopTime2;
 	public bool moving;
 	public bool oppositeDirection;
+	public Vector3 translation;
 
 	public NormalEffect() : base()
 	{
@@ -47,10 +48,10 @@ public class NormalEffect : MovementEffect {
 		if(moving)
 		{
 			if(oppositeDirection)
-				return -direction * speed1 * Time.deltaTime;
+				translation = direction * speed1 * (currentTime);
 			else				
-				return direction * speed1 * Time.deltaTime;
+				translation = direction * speed1 * (moveTime1 - currentTime);
 		}
-		return Vector3.zero;
+		return translation;
 	}
 }

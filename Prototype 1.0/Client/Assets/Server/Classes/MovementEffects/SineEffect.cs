@@ -5,7 +5,8 @@ public class SineEffect : MovementEffect {
 
 	public float t;
 	public float amplitude;
-	public float period;
+	public float frequency;
+	public bool cosine;
 	public int direction; //0 = x, 1 = y, 2 = z;
 	// Use this for initialization
 	public SineEffect() : base()
@@ -31,6 +32,9 @@ public class SineEffect : MovementEffect {
 
 	public float SineModifier()
 	{
-		return amplitude * Mathf.Sin(period * t);
+		if(cosine)
+			return amplitude * Mathf.Cos(frequency * t);
+			else
+		return amplitude * Mathf.Sin(frequency * t);
 	}
 }

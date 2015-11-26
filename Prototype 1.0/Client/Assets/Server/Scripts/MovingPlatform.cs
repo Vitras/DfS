@@ -47,9 +47,14 @@ public class MovingPlatform : MonoBehaviour
 
 	void ApplyEffects()
 	{
+		transform.position = originalPosition;
 		for(int x = 0; x < normalEffects.Length; x++)
 		{
 			transform.position += normalEffects[x].Apply();
+		}
+		for(int x = 0; x < sineEffects.Length; x++)
+		{
+			transform.position += sineEffects[x].Apply();
 		}
 	}
 }
