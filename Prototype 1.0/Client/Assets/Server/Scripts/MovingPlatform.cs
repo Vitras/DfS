@@ -1,36 +1,49 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class MovingPlatform : MonoBehaviour
 {
 	public int triggerID;
+	public List<MovementEffect> effects;
 	public bool moving;
-	public Vector3 originalPosition;
-	public float t;
-	public float amplitude;
-	public float period;
 	public TriggerScript trigger;
 	// Use this for initialization
 	void Start ()
 	{
 		moving = false;
-		originalPosition = transform.position - SineModifier ();
+		effects = new List<MovementEffect>();
+		ApplyEffects ();
 	}
-	
+
 	// Update is called once per frame
 	void Update ()
 	{
 		if (trigger.Triggered || moving) {
-			t += Time.deltaTime;
-			//if (t > Mathf.PI * 2 * period)
-			//t -= Mathf.PI * 2 * period;
-			transform.localPosition = originalPosition + SineModifier ();
+			ApplyEffects ();
 		}
 	}
 
-	Vector3 SineModifier ()
+	void FillEffects()
 	{
-		//print (amplitude * (Mathf.Sin (period * t)));
-		return new Vector3 (amplitude * (Mathf.Sin (period * t)), 0, 0);
+		NormalEffect[] nEffects = gameObject.GetComponents<NormalEffect>();
+		SineEffect[] sEffects = gameObject.GetComponents<SineEffect>();
+		for(int x = 0; x < nEffects.Length; x++)
+		{
+			effects.Add (nEffects[x]);
+		}
+		for(int x = 0; x < sEffects.Length; x++)
+		{
+			effects.Add (sEffects[x]);
+		}
+
+	}
+
+	void ApplyEffects()
+	{		
+		for(int x = 0; x < effects.Count; x++)
+		{
+			effects[x].Apply(transform.position);
+		}
 	}
 }
