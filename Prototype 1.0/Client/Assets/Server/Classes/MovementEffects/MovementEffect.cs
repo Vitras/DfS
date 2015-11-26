@@ -7,11 +7,12 @@ public class MovementEffect : MonoBehaviour{
 	{
 	}
 
-	public virtual void Initialize()
+	public virtual void Initialize(Transform transform)
 	{
 	}
 
-	public virtual void Apply(Vector3 position)
+	public virtual Vector3 Apply()
 	{
+		return Vector3.zero;
 	}
 }

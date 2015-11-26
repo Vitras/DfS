@@ -3,10 +3,10 @@ using System.Collections;
 
 public class SineEffect : MovementEffect {
 
-	public Vector3 originalPosition;
 	public float t;
 	public float amplitude;
 	public float period;
+	public int direction; //0 = x, 1 = y, 2 = z;
 	// Use this for initialization
 	public SineEffect() : base()
 	{
@@ -14,12 +14,23 @@ public class SineEffect : MovementEffect {
 	}	
 	// Update is called once per frame	
 	
-	public void Initialize()
+	public override void Initialize(Transform transform)
 	{
-
 	}
 
-	public void Apply(Vector3 position)
+	public override Vector3 Apply()
 	{
+		t += Time.deltaTime;
+	switch(direction){
+		case 0: return new Vector3(SineModifier(), 0, 0); 
+		case 1: return new Vector3(0, SineModifier(), 0); 
+		case 2: return new Vector3(0, 0, SineModifier()); 
+		default: return Vector3.zero;
+		}
+	}
+
+	public float SineModifier()
+	{
+		return amplitude * Mathf.Sin(period * t);
 	}
 }

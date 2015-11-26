@@ -5,14 +5,18 @@ using System.Collections.Generic;
 public class MovingPlatform : MonoBehaviour
 {
 	public int triggerID;
-	public List<MovementEffect> effects;
+	public NormalEffect[] normalEffects;
+	public SineEffect[] sineEffects;
 	public bool moving;
+	public Vector3 originalPosition;
 	public TriggerScript trigger;
 	// Use this for initialization
 	void Start ()
 	{
+		originalPosition = transform.position;
 		moving = false;
-		effects = new List<MovementEffect>();
+		FillEffects ();
+		InitializeEffects();
 		ApplyEffects ();
 	}
 
@@ -24,26 +28,28 @@ public class MovingPlatform : MonoBehaviour
 		}
 	}
 
+	void InitializeEffects()
+	{
+		for(int x = 0; x < normalEffects.Length; x++)
+		{
+			normalEffects[x].Initialize (transform);
+		}
+		for(int x = 0; x < sineEffects.Length; x++)
+		{			
+			sineEffects[x].Initialize (transform);
+		}
+	}
 	void FillEffects()
 	{
-		NormalEffect[] nEffects = gameObject.GetComponents<NormalEffect>();
-		SineEffect[] sEffects = gameObject.GetComponents<SineEffect>();
-		for(int x = 0; x < nEffects.Length; x++)
-		{
-			effects.Add (nEffects[x]);
-		}
-		for(int x = 0; x < sEffects.Length; x++)
-		{
-			effects.Add (sEffects[x]);
-		}
-
+		normalEffects = gameObject.GetComponents<NormalEffect>();
+		sineEffects = gameObject.GetComponents<SineEffect>();
 	}
 
 	void ApplyEffects()
-	{		
-		for(int x = 0; x < effects.Count; x++)
+	{
+		for(int x = 0; x < normalEffects.Length; x++)
 		{
-			effects[x].Apply(transform.position);
+			transform.position += normalEffects[x].Apply();
 		}
 	}
 }
