@@ -1,0 +1,162 @@
+fileFormatVersion: 2
+guid: 65bcce9dd0654d9498a2ba60d9771d33
+timeCreated: 1448712236
+licenseType: Free
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: BodyHead1
+    100002: GasTank
+    100004: ikHandle1
+    100006: ikHandle2
+    100008: ikHandle3
+    100010: ikHandle4
+    100012: ikHandle5
+    100014: ikHandle6
+    100016: ikHandle7
+    100018: joint1
+    100020: joint10
+    100022: joint11
+    100024: joint12
+    100026: joint14
+    100028: joint15
+    100030: joint16
+    100032: joint17
+    100034: joint18
+    100036: joint2
+    100038: joint22
+    100040: joint23
+    100042: joint24
+    100044: joint25
+    100046: joint26
+    100048: joint27
+    100050: joint3
+    100052: joint4
+    100054: joint5
+    100056: joint6
+    100058: joint7
+    100060: joint8
+    100062: joint9
+    100064: LeftArm
+    100066: LeftLeg
+    100068: Model_grp
+    100070: RightArm
+    100072: RightLeg
+    100074: Skeleton_grp
+    100076: //RootNode
+    400000: BodyHead1
+    400002: GasTank
+    400004: ikHandle1
+    400006: ikHandle2
+    400008: ikHandle3
+    400010: ikHandle4
+    400012: ikHandle5
+    400014: ikHandle6
+    400016: ikHandle7
+    400018: joint1
+    400020: joint10
+    400022: joint11
+    400024: joint12
+    400026: joint14
+    400028: joint15
+    400030: joint16
+    400032: joint17
+    400034: joint18
+    400036: joint2
+    400038: joint22
+    400040: joint23
+    400042: joint24
+    400044: joint25
+    400046: joint26
+    400048: joint27
+    400050: joint3
+    400052: joint4
+    400054: joint5
+    400056: joint6
+    400058: joint7
+    400060: joint8
+    400062: joint9
+    400064: LeftArm
+    400066: LeftLeg
+    400068: Model_grp
+    400070: RightArm
+    400072: RightLeg
+    400074: Skeleton_grp
+    400076: //RootNode
+    4300000: BodyHead1
+    4300002: RightLeg
+    4300004: LeftLeg
+    4300006: GasTank
+    4300008: LeftArm
+    4300010: RightArm
+    7400000: Take 001
+    9500000: //RootNode
+    11100000: //RootNode
+    13700000: BodyHead1
+    13700002: GasTank
+    13700004: LeftArm
+    13700006: LeftLeg
+    13700008: RightArm
+    13700010: RightLeg
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 2
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

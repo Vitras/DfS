@@ -33,7 +33,7 @@ public class PlayerMechanics2 : MonoBehaviour
 		}
 		float jump = Input.GetAxis ("Jump");
 		Move ();
-		transform.LookAt (transform.position + direction);
+		transform.LookAt (transform.position - direction);
 		direction.y = body.velocity.y;
 		if (jump > 0.1f && grounded) {
 			grounded = false;
@@ -68,19 +68,16 @@ public class PlayerMechanics2 : MonoBehaviour
 		}
 	}
 
-	void OnTriggerEnter(Collider col)
+	void OnTriggerEnter (Collider col)
 	{
 		
-		if(col.gameObject.tag == "Objective A")
-		{
-			GameObject.Find ("EnvironmentManager").GetComponent<Environment>().ScoreRed++;
-			col.gameObject.GetComponent<SphereCollider>().enabled = false;
+		if (col.gameObject.tag == "Objective A") {
+			GameObject.Find ("EnvironmentManager").GetComponent<Environment> ().ScoreRed++;
+			col.gameObject.GetComponent<SphereCollider> ().enabled = false;
 
-		}
-		else if(col.gameObject.tag == "Objective B")
-		{
-			GameObject.Find ("EnvironmentManager").GetComponent<Environment>().ScoreBlue++;
-			col.gameObject.GetComponent<SphereCollider>().enabled = false;
+		} else if (col.gameObject.tag == "Objective B") {
+			GameObject.Find ("EnvironmentManager").GetComponent<Environment> ().ScoreBlue++;
+			col.gameObject.GetComponent<SphereCollider> ().enabled = false;
 		}
 	}
 	void OnCollisionExit (Collision col)
