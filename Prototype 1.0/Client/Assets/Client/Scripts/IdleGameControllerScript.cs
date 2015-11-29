@@ -40,6 +40,11 @@ public class IdleGameControllerScript : MonoBehaviour {
 		Application.LoadLevel("ReactionGame");
 	}
 
+	public void GoToMinimap()
+	{
+		Application.LoadLevel("Minimap");
+	}
+	
 	public int Currency
 	{
 		get {return network.points;}
