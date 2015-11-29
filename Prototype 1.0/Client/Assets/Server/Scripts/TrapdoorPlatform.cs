@@ -18,19 +18,13 @@ public class TrapdoorPlatform : MonoBehaviour
 	void Start ()
 	{
 		Vector3 size = right.transform.lossyScale;
-		print(transform.eulerAngles.y);
 		lengthWise = Mathf.Abs (transform.eulerAngles.y - 90) <= 1;
-		if(lengthWise)
-		{
-		rightTurningPoint = transform.localPosition - new Vector3 (0, 0, size.z);
-		leftTurningPoint = transform.localPosition + new Vector3 (0, 0, size.z);
-			Debug.Log("Lengthwise");
-		}
-		else
-		{
-			rightTurningPoint = transform.localPosition + new Vector3(size.x, 0, 0);
-			leftTurningPoint = transform.localPosition - new Vector3(size.x, 0, 0);
-			Debug.Log ("WidthWise");
+		if (lengthWise) {
+			rightTurningPoint = transform.localPosition - new Vector3 (0, 0, size.z);
+			leftTurningPoint = transform.localPosition + new Vector3 (0, 0, size.z);
+		} else {
+			rightTurningPoint = transform.localPosition + new Vector3 (size.x, 0, 0);
+			leftTurningPoint = transform.localPosition - new Vector3 (size.x, 0, 0);
 		}
 	}
 	
@@ -38,8 +32,8 @@ public class TrapdoorPlatform : MonoBehaviour
 	void Update ()
 	{
 		
-		Debug.DrawRay(rightTurningPoint, Vector3.down * 2, Color.magenta, 60);
-		Debug.DrawRay(leftTurningPoint, Vector3.down * 2, Color.magenta, 60);
+		Debug.DrawRay (rightTurningPoint, Vector3.down * 2, Color.magenta, 60);
+		Debug.DrawRay (leftTurningPoint, Vector3.down * 2, Color.magenta, 60);
 		if (active) {
 			if (lengthWise) {
 				if (currentTime <= 0) {
@@ -60,9 +54,8 @@ public class TrapdoorPlatform : MonoBehaviour
 					} 
 				} else
 					currentTime -= Time.deltaTime;
-			}
-			else
-			{if (currentTime <= 0) {
+			} else {
+				if (currentTime <= 0) {
 					if (opening) {
 						right.transform.RotateAround (rightTurningPoint, Vector3.forward, 1);
 						left.transform.RotateAround (leftTurningPoint, Vector3.back, 1);
