@@ -6,12 +6,14 @@ public class PlayerMechanics2 : MonoBehaviour
 	public bool grounded;
 	public float speed;
 	public float jumpHeight;
-	public Vector3 direction; //degrees, 0 is right (cos 0 = x = 1), counter clockwise
+	public Vector3 direction;	
+	private Vector3 correction;
 // Use this for initialization
 	void Start ()
 	{
 		Physics.gravity = new Vector3 (0, -40, 0);
 		direction = Vector3.forward;
+		correction = new Vector3 (0, 0.46f, 0);
 	}
 
 // Update is called once per frame
@@ -40,7 +42,7 @@ public class PlayerMechanics2 : MonoBehaviour
 			direction.y = jumpHeight;
 		}
 		body.velocity = direction;
-		if (Mathf.Abs (body.velocity.y) < 0.5f && CheckGround (body.position))
+		if (Mathf.Abs (body.velocity.y) < 0.5f && CheckGround (body.position + correction))
 			grounded = true;
 	}	
 

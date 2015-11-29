@@ -3,7 +3,7 @@ using System.Collections;
 
 public class TrapdoorPlatform : MonoBehaviour
 {
-
+	public TriggerScript triggerScript;	
 	public bool active;
 	public bool opening;
 	public float openTime;
@@ -31,10 +31,9 @@ public class TrapdoorPlatform : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		
 		Debug.DrawRay (rightTurningPoint, Vector3.down * 2, Color.magenta, 60);
 		Debug.DrawRay (leftTurningPoint, Vector3.down * 2, Color.magenta, 60);
-		if (active) {
+		if (active || triggerScript.Triggered) {
 			if (lengthWise) {
 				if (currentTime <= 0) {
 					if (opening) {

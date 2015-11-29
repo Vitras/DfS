@@ -76,21 +76,21 @@ public class Server : MonoBehaviour
 			int suffixValue = 0;
 			switch (commands [2]) {
 			case "left":
-				suffixValue = 1;
 				break;
 			case "right":
-				suffixValue = 2;
+				suffixValue = 1;
 				break;
 			case "top":
-				suffixValue = 3;
+				suffixValue = 2;
 				break;
 			case "bottom":
-				suffixValue = 4;
+				suffixValue = 3;
 				break;
 			default:
 				break;
 			}
-			int triggerID = int.Parse (commands [1]) * 4 + suffixValue;
+			int triggerID = (int.Parse (commands [1]) - 1) * 4 + suffixValue;
+			Debug.Log (triggerID);
 			GameObject.Find ("EnvironmentManager").GetComponent<EnvironmentTriggers> ().Trigger (triggerID);
 			return;
 		}
