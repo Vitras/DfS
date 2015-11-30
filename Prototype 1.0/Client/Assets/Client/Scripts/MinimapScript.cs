@@ -10,7 +10,7 @@ public class MinimapScript : MonoBehaviour
 	private bool panelOpen = false;
 	private int lastOpenedPanel = 0;
 	private GameObject lastCreatedPanel;
-	public Text pointIndicator;
+	public Text pointIndicator,notificationIndicator;
 	private int points;
 
 	// Use this for initialization
@@ -23,8 +23,8 @@ public class MinimapScript : MonoBehaviour
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	
+	void FixedUpdate () 
+	{
 	}
 
 
@@ -43,6 +43,15 @@ public class MinimapScript : MonoBehaviour
 
 	public void PanelButtonOnClick(string direction)
 	{
+
+		if(direction == "return")
+		{
+			panelOpen = false;
+			GameObject.Destroy(lastCreatedPanel);
+			pointIndicator.text = points.ToString();
+			return;
+		}
+
 		if(points >= 100)
 		{
 			GameObject networkManager = GameObject.Find("NetworkManager");
@@ -51,6 +60,12 @@ public class MinimapScript : MonoBehaviour
 			Debug.Log("command sent: " +  "T|" + lastOpenedPanel.ToString() + "|" + direction);
 			points -= 100;
 		}
+		else
+		{
+			notificationIndicator.text = "Not enough points!";
+			StartCoroutine(ClearNotification(3.0f));
+		}
+
 		panelOpen = false;
 		GameObject.Destroy(lastCreatedPanel);
 		pointIndicator.text = points.ToString();
@@ -63,5 +78,12 @@ public class MinimapScript : MonoBehaviour
 		networkManager.GetComponent<NetworkScript>().points = points;
 		Application.LoadLevel("InGame");
 	}
+
+	IEnumerator ClearNotification(float time)
+	{
+		yield return new WaitForSeconds(time);
+		notificationIndicator.text = "";
+	}
+
 
 }
