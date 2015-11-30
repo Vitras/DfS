@@ -1,16 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerMechanics2 : MonoBehaviour
 {
 	public bool grounded;
 	public float speed;
 	public float jumpHeight;
-	public Vector3 direction;	
+	public Vector3 direction;
+	public GameObject jump;
+	public string[] animations;
+	public string currentAnimation;
 	private Vector3 correction;
 // Use this for initialization
 	void Start ()
 	{
+
 		Physics.gravity = new Vector3 (0, -40, 0);
 		direction = Vector3.forward;
 		correction = new Vector3 (0, 0.46f, 0);
@@ -31,6 +36,7 @@ public class PlayerMechanics2 : MonoBehaviour
 		}
 		Rigidbody body = GetComponent<Rigidbody> ();
 		if (Mathf.Abs (body.velocity.y) > 0.2f) {
+			PlayAnimation ("Jump");
 			grounded = false;
 		}
 		float jump = Input.GetAxis ("Jump");
@@ -39,6 +45,7 @@ public class PlayerMechanics2 : MonoBehaviour
 		direction.y = body.velocity.y;
 		if (jump > 0.1f && grounded) {
 			grounded = false;
+			PlayAnimation ("Jump");
 			direction.y = jumpHeight;
 		}
 		body.velocity = direction;
@@ -58,6 +65,19 @@ public class PlayerMechanics2 : MonoBehaviour
 	
 		direction = (h * right + v * forward);
 		direction *= speed;
+		if(grounded)
+		{
+			if(direction.magnitude > 0.2f)
+			{
+				Debug.Log ("RUN");
+				PlayAnimation ("Run");
+			}
+			else
+			{
+				Debug.Log ("IDLE");
+				PlayAnimation ("Idle");
+			}
+		}
 	}
 
 
@@ -67,7 +87,7 @@ public class PlayerMechanics2 : MonoBehaviour
 			GameObject.Find ("EnvironmentManager").GetComponent<Environment> ().CheckObjectives ();
 		} else if (col.gameObject.tag == "Moving Platform") {
 			RaycastHit hit;
-			if(Physics.Raycast (GetComponent<Rigidbody>().position + correction, Vector3.down, out hit, 0.5f) && hit.transform.gameObject == col.gameObject)
+			if(Physics.Raycast (GetComponent<Rigidbody>().position + correction, Vector3.down, out hit, 0.7f) && hit.transform.gameObject == col.gameObject)
 				transform.SetParent (col.gameObject.transform.parent);
 		}
 	}
@@ -88,7 +108,7 @@ public class PlayerMechanics2 : MonoBehaviour
 	{
 		if (col.gameObject.tag == "Moving Platform"){
 			RaycastHit hit;
-		if(!Physics.Raycast (GetComponent<Rigidbody>().position + correction, Vector3.down, out hit, 0.5f))
+		if(!Physics.Raycast (GetComponent<Rigidbody>().position + correction, Vector3.down, out hit, 0.7f))
 			transform.SetParent (null);
 			   }
 	}
@@ -105,6 +125,12 @@ public class PlayerMechanics2 : MonoBehaviour
 		return Physics.Raycast (origin, Vector3.down, 2.5f) || Physics.Raycast (origin + new Vector3 (size.x * 2, 0, 0), Vector3.down, 2.5f) ||
 			Physics.Raycast (origin + new Vector3 (-size.x * 2, 0, 0), Vector3.down, 2.5f) || Physics.Raycast (origin + new Vector3 (0, 0, size.z * 2), Vector3.down, 2.5f)
 			|| Physics.Raycast (origin + new Vector3 (0, 0, -size.z * 2), Vector3.down, 2.5f);
+	}
+
+	void PlayAnimation(string name)
+	{
+		if(name != currentAnimation)
+			this.GetComponent<Animation>().Play (name);
 	}
 }
 

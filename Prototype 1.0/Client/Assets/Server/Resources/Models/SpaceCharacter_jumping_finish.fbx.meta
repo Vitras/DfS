@@ -1,95 +1,83 @@
 fileFormatVersion: 2
-guid: 65bcce9dd0654d9498a2ba60d9771d33
-timeCreated: 1448712236
+guid: 709aa053af4c3d54f946bdb414816ad2
+timeCreated: 1448897305
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
     100000: BodyHead1
     100002: GasTank
-    100004: ikHandle1
-    100006: ikHandle2
-    100008: ikHandle3
-    100010: ikHandle4
-    100012: ikHandle5
-    100014: ikHandle6
-    100016: ikHandle7
-    100018: joint1
-    100020: joint10
-    100022: joint11
-    100024: joint12
-    100026: joint14
-    100028: joint15
-    100030: joint16
-    100032: joint17
-    100034: joint18
-    100036: joint2
-    100038: joint22
-    100040: joint23
-    100042: joint24
-    100044: joint25
-    100046: joint26
-    100048: joint27
-    100050: joint3
-    100052: joint4
-    100054: joint5
-    100056: joint6
-    100058: joint7
-    100060: joint8
-    100062: joint9
-    100064: LeftArm
-    100066: LeftLeg
-    100068: Model_grp
-    100070: RightArm
-    100072: RightLeg
-    100074: Skeleton_grp
-    100076: //RootNode
+    100004: joint1
+    100006: joint10
+    100008: joint11
+    100010: joint12
+    100012: joint14
+    100014: joint15
+    100016: joint16
+    100018: joint17
+    100020: joint18
+    100022: joint2
+    100024: joint22
+    100026: joint23
+    100028: joint24
+    100030: joint25
+    100032: joint26
+    100034: joint27
+    100036: joint3
+    100038: joint4
+    100040: joint5
+    100042: joint6
+    100044: joint7
+    100046: joint8
+    100048: joint9
+    100050: LeftArm
+    100052: LeftLeg
+    100054: Model_grp
+    100056: RightArm
+    100058: RightLeg
+    100060: Skeleton_grp
+    100062: //RootNode
     400000: BodyHead1
     400002: GasTank
-    400004: ikHandle1
-    400006: ikHandle2
-    400008: ikHandle3
-    400010: ikHandle4
-    400012: ikHandle5
-    400014: ikHandle6
-    400016: ikHandle7
-    400018: joint1
-    400020: joint10
-    400022: joint11
-    400024: joint12
-    400026: joint14
-    400028: joint15
-    400030: joint16
-    400032: joint17
-    400034: joint18
-    400036: joint2
-    400038: joint22
-    400040: joint23
-    400042: joint24
-    400044: joint25
-    400046: joint26
-    400048: joint27
-    400050: joint3
-    400052: joint4
-    400054: joint5
-    400056: joint6
-    400058: joint7
-    400060: joint8
-    400062: joint9
-    400064: LeftArm
-    400066: LeftLeg
-    400068: Model_grp
-    400070: RightArm
-    400072: RightLeg
-    400074: Skeleton_grp
-    400076: //RootNode
+    400004: joint1
+    400006: joint10
+    400008: joint11
+    400010: joint12
+    400012: joint14
+    400014: joint15
+    400016: joint16
+    400018: joint17
+    400020: joint18
+    400022: joint2
+    400024: joint22
+    400026: joint23
+    400028: joint24
+    400030: joint25
+    400032: joint26
+    400034: joint27
+    400036: joint3
+    400038: joint4
+    400040: joint5
+    400042: joint6
+    400044: joint7
+    400046: joint8
+    400048: joint9
+    400050: LeftArm
+    400052: LeftLeg
+    400054: Model_grp
+    400056: RightArm
+    400058: RightLeg
+    400060: Skeleton_grp
+    400062: //RootNode
     4300000: BodyHead1
     4300002: RightLeg
     4300004: LeftLeg
     4300006: GasTank
     4300008: LeftArm
     4300010: RightArm
-    7400000: Run
+    7400000: Jump
+    7400002: Take 001
+    7400004: Take 0010
     9500000: //RootNode
     11100000: //RootNode
     13700000: BodyHead1
@@ -115,14 +103,14 @@ ModelImporter:
     animationRotationError: .5
     animationPositionError: .5
     animationScaleError: .5
-    animationWrapMode: 2
+    animationWrapMode: 1
     extraExposedTransformPaths: []
     clipAnimations:
     - serializedVersion: 16
-      name: Run
+      name: Jump
       takeName: Take 001
       firstFrame: 0
-      lastFrame: 19
+      lastFrame: 26
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -143,20 +131,6 @@ ModelImporter:
       events: []
       transformMask:
       - path: 
-        weight: 1
-      - path: ikHandle1
-        weight: 1
-      - path: ikHandle2
-        weight: 1
-      - path: ikHandle3
-        weight: 1
-      - path: ikHandle4
-        weight: 1
-      - path: ikHandle5
-        weight: 1
-      - path: ikHandle6
-        weight: 1
-      - path: ikHandle7
         weight: 1
       - path: Model_grp
         weight: 1
