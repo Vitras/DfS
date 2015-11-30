@@ -66,7 +66,9 @@ public class PlayerMechanics2 : MonoBehaviour
 		if (col.gameObject.name == "Goal") {
 			GameObject.Find ("EnvironmentManager").GetComponent<Environment> ().CheckObjectives ();
 		} else if (col.gameObject.tag == "Moving Platform") {
-			transform.SetParent (col.gameObject.transform.parent);
+			RaycastHit hit;
+			if(Physics.Raycast (GetComponent<Rigidbody>().position + correction, Vector3.down, out hit, 0.5f) && hit.transform.gameObject == col.gameObject)
+				transform.SetParent (col.gameObject.transform.parent);
 		}
 	}
 
@@ -84,8 +86,11 @@ public class PlayerMechanics2 : MonoBehaviour
 	}
 	void OnCollisionExit (Collision col)
 	{
-		if (col.gameObject.tag == "Moving Platform")
+		if (col.gameObject.tag == "Moving Platform"){
+			RaycastHit hit;
+		if(!Physics.Raycast (GetComponent<Rigidbody>().position + correction, Vector3.down, out hit, 0.5f))
 			transform.SetParent (null);
+			   }
 	}
 
 
