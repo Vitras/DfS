@@ -82,7 +82,7 @@ public class MinimapScript : MonoBehaviour
 	IEnumerator ClearNotification(float time)
 	{
 		yield return new WaitForSeconds(time);
-		notificationIndicator.text = "";
+		notificationIndicator.text = "Activate level objects. this costs 100 points each time!";
 	}
 
 
