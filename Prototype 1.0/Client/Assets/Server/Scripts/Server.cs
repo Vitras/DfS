@@ -11,9 +11,11 @@ using UnityEngine.UI;
 public class Server : MonoBehaviour
 {
 	private int port = 25000;
-	private Dictionary<string,ServerSidePlayer> players;
+	private Dictionary<int,ServerSidePlayer> players;
 	public Text eventFeed;
 	public Text IpIndicator;
+	private object thisLock = new object();
+	public int idGenerator = 1000;
 	public enum Team
 	{
 		Red=0,
@@ -24,7 +26,7 @@ public class Server : MonoBehaviour
 	void Start ()
 	{
 		//create dictionary for players
-		players = new Dictionary<string,ServerSidePlayer> ();
+		players = new Dictionary<int,ServerSidePlayer> ();
 		//Start the server
 		NetworkServer.Listen (port);
 		Debug.Log ("Server started");
@@ -53,15 +55,21 @@ public class Server : MonoBehaviour
 
 	void OnReceiveInitialMessage (NetworkMessage netMsg)
 	{
+		ServerSidePlayer p;
 		var msg = netMsg.ReadMessage<Messages.InitialMessage> ();
 		Team balancedTeamChoice = BalancedTeamAssign ();
-		ServerSidePlayer p = new ServerSidePlayer (msg.username, balancedTeamChoice);
-		players.Add (msg.ip, p);
-		Debug.Log ("Added player: " + msg.username + "with ip: " + msg.ip + " To the playerlog.");
+		lock(thisLock)
+		{
+			p = new ServerSidePlayer (msg.username, balancedTeamChoice,idGenerator,msg.ip);
+			idGenerator++;
+			players.Add (p.id, p);
+		}
+		Debug.Log ("Added player: " + msg.username + " with ip: " + msg.ip + " and id: " + p.id.ToString() + " To the playerlog.");
 		eventFeed.text = msg.username + " joined the game on team: " + balancedTeamChoice.ToString () + " !";
 		//send team message here
 		var teamMsg = new Messages.CommunicateTeamToClientMessage ();
 		teamMsg.team = (int)balancedTeamChoice;
+		teamMsg.id = p.id;
 		netMsg.conn.Send (Messages.communicateTeamToClientMessageId, teamMsg);
 	}
 
@@ -70,7 +78,7 @@ public class Server : MonoBehaviour
 		var msg = netMsg.ReadMessage<Messages.CommandMessage> ();
 		string command = msg.command;
 		Debug.Log ("received command:" + command);
-		eventFeed.text = GetUsernameByIp (msg.ip) + " just activated command " + command;
+		eventFeed.text = GetUsernameById (msg.id) + " just activated command " + command;
 		if (command.StartsWith ("T")) {
 			string[] commands = command.Split ('|');
 			int suffixValue = 0;
@@ -103,23 +111,25 @@ public class Server : MonoBehaviour
 	public void OnReceiveClientDisconnectMessage (NetworkMessage netMsg)
 	{
 		var msg = netMsg.ReadMessage<Messages.ClientDisconnectMessage> ();
-		string name = GetUsernameByIp (msg.ip);
-		players.Remove (msg.ip);
+		string name = GetUsernameById (msg.id);
+		players.Remove(msg.id);
 		eventFeed.text = name + " has disconnected...";
+		Debug.Log(players.ToString());
 	}
 
 	//supporting functions
-	public string GetUsernameByIp (string ip)
+	public string GetUsernameById (int id)
 	{
 		ServerSidePlayer p;
-		players.TryGetValue (ip, out p);
+		Debug.Log(id.ToString());
+		players.TryGetValue (id, out p);
 		return p.userName;
 	}
 
 	public Team BalancedTeamAssign ()
 	{
-		Dictionary<string,ServerSidePlayer> redPlayers = new Dictionary<string,ServerSidePlayer> ();
-		Dictionary<string,ServerSidePlayer> bluePlayers = new Dictionary<string,ServerSidePlayer> ();
+		Dictionary<int,ServerSidePlayer> redPlayers = new Dictionary<int,ServerSidePlayer> ();
+		Dictionary<int,ServerSidePlayer> bluePlayers = new Dictionary<int,ServerSidePlayer> ();
 
 		redPlayers = FindTeam (Team.Red);
 		bluePlayers = FindTeam (Team.Blue);
@@ -131,9 +141,9 @@ public class Server : MonoBehaviour
 		}
 	}
 
-	public Dictionary<string,ServerSidePlayer> FindTeam (Team t)
+	public Dictionary<int,ServerSidePlayer> FindTeam (Team t)
 	{
-		Dictionary<string,ServerSidePlayer> filteredDictionary = new Dictionary<string,ServerSidePlayer> ();
+		Dictionary<int,ServerSidePlayer> filteredDictionary = new Dictionary<int,ServerSidePlayer> ();
 		filteredDictionary = players;
 		filteredDictionary = filteredDictionary.Where (p => p.Value.teamColor == t).ToDictionary (p => p.Key, p => p.Value);
 		return filteredDictionary;
@@ -149,11 +159,14 @@ public class ServerSidePlayer
 	public string userName;
 	//room for more here
 	public Server.Team teamColor;
+	public string ip;
+	public int id;
 
-	public ServerSidePlayer (string UN, Server.Team team)
+	public ServerSidePlayer (string UN, Server.Team team,int identifier,string ip)
 	{
 		userName = UN;
 		teamColor = team;
+		id = identifier;
 
 	}
 }

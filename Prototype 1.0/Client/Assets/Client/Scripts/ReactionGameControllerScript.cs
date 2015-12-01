@@ -71,8 +71,8 @@ public class ReactionGameControllerScript : MonoBehaviour {
 
 	public void ReturnToIdle()
 	{
-		GameObject networkManager = GameObject.Find("NetworkManager");
-		networkManager.GetComponent<NetworkScript>().points += points;
+
+		NetworkScript.instance.points += points;
 		Application.LoadLevel("InGame");
 	}
 

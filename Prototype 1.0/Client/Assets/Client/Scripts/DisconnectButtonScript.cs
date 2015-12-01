@@ -24,9 +24,10 @@ public class DisconnectButtonScript : MonoBehaviour
 
 	public void Disconnect ()
 	{
-		NetworkScript nwm = GameObject.Find("NetworkManager").GetComponent<NetworkScript>();
+		NetworkScript nwm = NetworkScript.instance;
 		var msg = new Messages.ClientDisconnectMessage();
 		msg.ip = nwm.myIp;
+		msg.id = nwm.playerId;
 		nwm.client.Send(Messages.clientDisconnectMessageId,msg);
 		StartCoroutine(DisconnectDelay(nwm));
 		Application.LoadLevel("Main");

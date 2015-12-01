@@ -6,21 +6,17 @@ public class IdleGameControllerScript : MonoBehaviour {
 	
 	public Text currencyCounter;
 	public GameObject collectable;
-	private GameObject networkManager;
-	private NetworkScript network;
 
 	// Use this for initialization
 	void Start () 
 	{
 		InvokeRepeating("EverySecond",0,1);
-		networkManager = GameObject.Find("NetworkManager");
-		network = networkManager.GetComponent<NetworkScript>();
 	}
 
 	void EverySecond()
 	{
-		network.points += 1;
-		currencyCounter.text = network.points.ToString();
+		NetworkScript.instance.points += 1;
+		currencyCounter.text = NetworkScript.instance.points.ToString();
 		int random = Random.Range(0,11);
 		if(random == 10)
 		{
@@ -47,11 +43,11 @@ public class IdleGameControllerScript : MonoBehaviour {
 	
 	public int Currency
 	{
-		get {return network.points;}
+		get {return NetworkScript.instance.points;}
 		set
 		{
-			network.points = value;
-			currencyCounter.text = network.points.ToString();
+			NetworkScript.instance.points = value;
+			currencyCounter.text = NetworkScript.instance.points.ToString();
 		}
 	}
 }

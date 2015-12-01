@@ -16,10 +16,8 @@ public class MinimapScript : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-		GameObject networkManager = GameObject.Find("NetworkManager");
-		NetworkScript script = networkManager.GetComponent<NetworkScript>();
-		pointIndicator.text = script.points.ToString();
-		points = script.points;
+		pointIndicator.text = NetworkScript.instance.points.ToString();
+		points = NetworkScript.instance.points;
 	}
 	
 	// Update is called once per frame
@@ -54,9 +52,7 @@ public class MinimapScript : MonoBehaviour
 
 		if(points >= 100)
 		{
-			GameObject networkManager = GameObject.Find("NetworkManager");
-			NetworkScript script = networkManager.GetComponent<NetworkScript>();
-			script.SendCommandToServer("T|" + lastOpenedPanel.ToString() + "|" + direction);
+			NetworkScript.instance.SendCommandToServer("T|" + lastOpenedPanel.ToString() + "|" + direction);
 			Debug.Log("command sent: " +  "T|" + lastOpenedPanel.ToString() + "|" + direction);
 			points -= 100;
 		}

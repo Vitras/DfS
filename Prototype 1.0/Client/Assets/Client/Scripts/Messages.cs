@@ -18,16 +18,19 @@ public class Messages
 	public class CommandMessage : MessageBase
 	{
 		public string ip;
+		public int id;
 		public string command;
 	}
 
 	public class ClientDisconnectMessage : MessageBase
 	{
 		public string ip;
+		public int id;
 	}
 
 	public class CommunicateTeamToClientMessage : MessageBase
 	{
 		public int team;
+		public int id;
 	}
 }

@@ -9,7 +9,9 @@ using UnityEngine.Networking.NetworkSystem;
 public class NetworkScript : MonoBehaviour
 {
 
-	public string serverIP;
+	public static NetworkScript instance;
+
+	public string serverIP = "127.0.0.1";
 	public int port = 25000;
 	public NetworkClient client;
 	public string myIp;
@@ -18,12 +20,17 @@ public class NetworkScript : MonoBehaviour
 	private Team team;
 	public GameObject teamIndicator;
 	public Sprite blueTeam,redTeam;
+	public int playerId;
 
 	// Use this for initialization
 	void Awake ()
 	{
-		serverIP = "127.0.0.1";
+		instance = this;
 		DontDestroyOnLoad (transform.gameObject);
+	}
+
+	void Start()
+	{
 		myIp = Network.player.ipAddress;
 		points = 100;
 		team = Team.None;
@@ -60,6 +67,7 @@ public class NetworkScript : MonoBehaviour
 
 	public void OnDisconnect(NetworkMessage netMsg)
 	{
+		//TODO implement wait for reconnect scene
 		Application.LoadLevel ("Main");
 		DestroyImmediate(transform.gameObject);
 	}
@@ -70,6 +78,7 @@ public class NetworkScript : MonoBehaviour
 		var msg = new Messages.CommandMessage();
 		msg.command = command;
 		msg.ip = myIp;
+		msg.id = playerId;
 		client.Send(Messages.commandMessageId,msg);
 		Debug.Log ("Command sent: " + command + "with message id: " + Messages.commandMessageId);
 	}
@@ -77,8 +86,10 @@ public class NetworkScript : MonoBehaviour
 	public void OnReceiveTeamMessage(NetworkMessage netMsg)
 	{
 		var msg = netMsg.ReadMessage<Messages.CommunicateTeamToClientMessage>();
-		team = (Team)msg.team;
-		Debug.Log("joined team: " + msg.team.ToString());
+		NetworkScript.instance.team = (Team)msg.team;
+		NetworkScript.instance.playerId = msg.id;
+		Debug.Log("player id set to: " + msg.id.ToString()); 
+		Debug.Log("joined team: " + msg.team.ToString() + "with player id: " + playerId.ToString());
 		GameObject.Instantiate(teamIndicator,new Vector3(26,111,-2),new Quaternion(0,0,0,0));
 		GameObject.Find("Team Indicator(Clone)").transform.parent = transform;
 		if(team == Team.Blue)
@@ -95,6 +106,7 @@ public class NetworkScript : MonoBehaviour
 			Debug.Log ("1 properly disconnected");
 			var msg = new Messages.ClientDisconnectMessage();
 			msg.ip = myIp;
+			msg.id = playerId;
 			client.Send(Messages.clientDisconnectMessageId,msg);
 			StartCoroutine(CloseConnection());
 			Debug.Log ("2 disconnected client");
