@@ -67,9 +67,10 @@ public class NetworkScript : MonoBehaviour
 
 	public void OnDisconnect(NetworkMessage netMsg)
 	{
+		//Debug.Log("disconnected by server...");
 		//TODO implement wait for reconnect scene
-		Application.LoadLevel ("Main");
-		DestroyImmediate(transform.gameObject);
+		//Application.LoadLevel ("Main");
+		//DestroyImmediate(transform.gameObject);
 	}
 	
 
