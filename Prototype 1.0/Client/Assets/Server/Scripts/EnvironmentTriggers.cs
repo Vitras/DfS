@@ -44,7 +44,6 @@ public class EnvironmentTriggers : MonoBehaviour
 				break;
 			}
 			int triggerID = (int.Parse (line [1]) - 1) * 4 + suffixValue;
-			Debug.Log (triggerID);
 			networkTriggers[triggerID] = transform.GetChild (x).gameObject;
 		}
 	}

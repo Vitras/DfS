@@ -23,7 +23,14 @@ public class PlayerMechanics2 : MonoBehaviour
 
 // Update is called once per frame
 	void Update ()
-	{
+	{	
+		if(Physics.Raycast(transform.position + 8 * correction, Vector3.up, 0.3f) && grounded)
+		{
+			transform.position = GameObject.Find("Spawn").transform.position;
+			transform.SetParent (null);
+			return;
+		}
+		Debug.DrawRay (GetComponent<Rigidbody>().position + 8 * correction, Vector3.up * 0.7f, Color.magenta, 5);
 		if (Input.GetKeyDown (KeyCode.JoystickButton0)) {
 			RaycastHit hit = new RaycastHit ();
 			if (Physics.Raycast (transform.position, direction, out hit, 15)) {
@@ -69,12 +76,10 @@ public class PlayerMechanics2 : MonoBehaviour
 		{
 			if(direction.magnitude > 0.2f)
 			{
-				Debug.Log ("RUN");
 				PlayAnimation ("Run");
 			}
 			else
 			{
-				Debug.Log ("IDLE");
 				PlayAnimation ("Idle");
 			}
 		}
@@ -85,11 +90,12 @@ public class PlayerMechanics2 : MonoBehaviour
 	{
 		if (col.gameObject.name == "Goal") {
 			GameObject.Find ("EnvironmentManager").GetComponent<Environment> ().CheckObjectives ();
-		} else if (col.gameObject.tag == "Moving Platform") {
+		} 
+		else if (col.gameObject.tag == "Moving Platform") {
 			RaycastHit hit;
 			if(Physics.Raycast (GetComponent<Rigidbody>().position + correction, Vector3.down, out hit, 0.7f) && hit.transform.gameObject == col.gameObject)
 				transform.SetParent (col.gameObject.transform.parent);
-		}
+		}	
 	}
 
 	void OnTriggerEnter (Collider col)
@@ -108,7 +114,7 @@ public class PlayerMechanics2 : MonoBehaviour
 	{
 		if (col.gameObject.tag == "Moving Platform"){
 			RaycastHit hit;
-		if(!Physics.Raycast (GetComponent<Rigidbody>().position + correction, Vector3.down, out hit, 0.7f))
+		if(!Physics.Raycast (GetComponent<Rigidbody>().position + correction, Vector3.down, out hit, 0.5f))
 			transform.SetParent (null);
 			   }
 	}
