@@ -31,7 +31,8 @@ public class DisconnectButtonScript : MonoBehaviour
 		nwm.client.Send(Messages.clientDisconnectMessageId,msg);
 		StartCoroutine(DisconnectDelay(nwm));
 		Application.LoadLevel("Main");
-		Destroy(nwm.transform.gameObject);
+		//Destroy(nwm.transform.gameObject);
+		nwm.Resetter();
 	}
 
 	IEnumerator DisconnectDelay(NetworkScript nwm)

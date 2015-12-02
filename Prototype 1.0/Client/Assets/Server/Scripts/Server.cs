@@ -14,8 +14,11 @@ public class Server : MonoBehaviour
 	private Dictionary<int,ServerSidePlayer> players;
 	public Text eventFeed;
 	public Text IpIndicator;
+	public GameObject playerListContent; 
 	private object thisLock = new object();
 	public int idGenerator = 1000;
+	public GameObject listItemPrefab;
+	private bool sentOutAliveChecks = false;
 	public enum Team
 	{
 		Red=0,
@@ -38,9 +41,63 @@ public class Server : MonoBehaviour
 		NetworkServer.RegisterHandler (Messages.initialMessageId, OnReceiveInitialMessage);
 		//listener for disconnectmessages from client
 		NetworkServer.RegisterHandler (Messages.clientDisconnectMessageId, OnReceiveClientDisconnectMessage);
+		//listener for responds to alive checks
+		NetworkServer.RegisterHandler (Messages.respondAliveMessageId, OnReceiveAliveMessageFromClient);
 		//Populate the ip address indicator and event feed
 		IpIndicator.text = Network.player.ipAddress;
 		eventFeed.text = "Important updates will appear here!";
+
+
+		InvokeRepeating("UpdatePlayerList",5.0f,5.0f);
+		InvokeRepeating("CheckClientStatus",0.0f,5.0f);
+	}
+
+	public void CheckClientStatus()
+	{
+		var netMsg = new Messages.CheckAliveMessage();
+		NetworkServer.SendToAll(Messages.checkAliveMessageId,netMsg);
+		foreach(KeyValuePair<int,ServerSidePlayer> kvp in players)
+		{
+			kvp.Value.alive = false;
+		}
+		sentOutAliveChecks = true;
+	}
+
+	public void UpdatePlayerList()
+	{
+		if(sentOutAliveChecks)
+		{
+			sentOutAliveChecks = false;
+			foreach(ServerSidePlayer p in players.Values)
+			{
+				if(!p.alive)
+				{
+					players.Remove(p.id);
+					var obj = GameObject.Find(p.id.ToString());
+					//Destroy(obj);
+					obj.GetComponent<Text>().color = Color.black;
+					obj.GetComponent<Text>().text += "(d)";
+				}
+				else
+				{
+					var obj = GameObject.Find(p.id.ToString());
+					if(p.teamColor == Team.Blue)
+						obj.GetComponent<Text>().color = Color.blue;
+					else
+						obj.GetComponent<Text>().color = Color.red;
+
+					obj.GetComponent<Text>().text = p.userName;
+				}
+			}
+		}
+	}
+
+	public void OnReceiveAliveMessageFromClient(NetworkMessage netMsg)
+	{
+		var msg = netMsg.ReadMessage<Messages.RespondAliveMessage>();
+		ServerSidePlayer p = GetPlayerById(msg.id);
+		p.alive = true;
+
 	}
 
 	void OnApplicationQuit ()
@@ -66,7 +123,18 @@ public class Server : MonoBehaviour
 		}
 		Debug.Log ("Added player: " + msg.username + " with ip: " + msg.ip + " and id: " + p.id.ToString() + " To the playerlog.");
 		eventFeed.text = msg.username + " joined the game on team: " + balancedTeamChoice.ToString () + " !";
+		var comp = Instantiate(listItemPrefab) as GameObject;
+		comp.GetComponent<Text>().text = msg.username;
+		comp.name = p.id.ToString();
+		if(p.teamColor == Team.Blue)
+			comp.GetComponent<Text>().color = Color.blue;
+		else if(p.teamColor == Team.Red)
+			comp.GetComponent<Text>().color = Color.red;
+		 
+		comp.transform.SetParent(playerListContent.transform,false);
+	
 		//send team message here
+		//
 		var teamMsg = new Messages.CommunicateTeamToClientMessage ();
 		teamMsg.team = (int)balancedTeamChoice;
 		teamMsg.id = p.id;
@@ -111,6 +179,11 @@ public class Server : MonoBehaviour
 	public void OnReceiveClientDisconnectMessage (NetworkMessage netMsg)
 	{
 		var msg = netMsg.ReadMessage<Messages.ClientDisconnectMessage> ();
+		var p = GetPlayerById(msg.id);
+		var obj = GameObject.Find(p.id.ToString());
+		obj.GetComponent<Text>().color = Color.black;
+		obj.GetComponent<Text>().text += "(d)";
+		
 		string name = GetUsernameById (msg.id);
 		players.Remove(msg.id);
 		eventFeed.text = name + " has disconnected...";
@@ -124,6 +197,14 @@ public class Server : MonoBehaviour
 		Debug.Log(id.ToString());
 		players.TryGetValue (id, out p);
 		return p.userName;
+	}
+
+	public ServerSidePlayer GetPlayerById (int id)
+	{
+		ServerSidePlayer p;
+		Debug.Log(id.ToString());
+		players.TryGetValue (id, out p);
+		return p;
 	}
 
 	public Team BalancedTeamAssign ()
@@ -161,12 +242,14 @@ public class ServerSidePlayer
 	public Server.Team teamColor;
 	public string ip;
 	public int id;
+	public bool alive;
 
 	public ServerSidePlayer (string UN, Server.Team team,int identifier,string ip)
 	{
 		userName = UN;
 		teamColor = team;
 		id = identifier;
+		alive = true;
 
 	}
 }

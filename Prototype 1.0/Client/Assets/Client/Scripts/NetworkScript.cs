@@ -21,12 +21,22 @@ public class NetworkScript : MonoBehaviour
 	public GameObject teamIndicator;
 	public Sprite blueTeam,redTeam;
 	public int playerId;
+	public bool hasReceivedAliveCheck = true;
 
 	// Use this for initialization
 	void Awake ()
 	{
+		if (instance != null) {
+			DestroyImmediate(gameObject);
+			return;
+		}
 		instance = this;
-		DontDestroyOnLoad (transform.gameObject);
+		DontDestroyOnLoad(gameObject);
+	}
+	
+	public void Resetter()
+	{
+		instance = new NetworkScript();
 	}
 
 	void Start()
@@ -34,8 +44,19 @@ public class NetworkScript : MonoBehaviour
 		myIp = Network.player.ipAddress;
 		points = 100;
 		team = Team.None;
+		InvokeRepeating("CheckServerStatus",15.0f,15.0f);
 	}
 
+	public void CheckServerStatus()
+	{
+		if(!hasReceivedAliveCheck && Application.loadedLevelName != "Main")
+		{
+			Debug.Log("connection to server lost...");
+			Application.LoadLevel ("Main");
+			Resetter();
+		}
+		hasReceivedAliveCheck = false;
+	}
 
 	public void ConnectToServer ()
 	{
@@ -47,9 +68,10 @@ public class NetworkScript : MonoBehaviour
 		}
 		GameObject.Find ("TitleText").GetComponent<Text> ().text = "Connecting to " + serverIP + "  ........";
 		client = new NetworkClient ();
-		client.RegisterHandler (MsgType.Connect, OnConnected); ;
+		client.RegisterHandler (MsgType.Connect, OnConnected);
 		client.RegisterHandler (MsgType.Disconnect, OnDisconnect);
 		client.RegisterHandler (Messages.communicateTeamToClientMessageId,OnReceiveTeamMessage);
+		client.RegisterHandler (Messages.checkAliveMessageId,OnReceiveAliveCheckMessage);
 		client.Connect (serverIP, port);
 		
 	}
@@ -63,6 +85,7 @@ public class NetworkScript : MonoBehaviour
 		msg.username = GameObject.Find ("UserNameField").GetComponentsInChildren<Text> () [1].text;
 		client.Send(Messages.initialMessageId,msg);
 		Application.LoadLevel ("InGame");
+		hasReceivedAliveCheck = true;
 	}
 
 	public void OnDisconnect(NetworkMessage netMsg)
@@ -72,7 +95,14 @@ public class NetworkScript : MonoBehaviour
 		//Application.LoadLevel ("Main");
 		//DestroyImmediate(transform.gameObject);
 	}
-	
+
+	public void OnReceiveAliveCheckMessage(NetworkMessage netMsg)
+	{
+		var msg = new Messages.RespondAliveMessage();
+		msg.id = playerId;
+		client.Send(Messages.respondAliveMessageId,msg);
+		hasReceivedAliveCheck = true;
+	}
 
 	public void SendCommandToServer (string command)
 	{
@@ -87,8 +117,8 @@ public class NetworkScript : MonoBehaviour
 	public void OnReceiveTeamMessage(NetworkMessage netMsg)
 	{
 		var msg = netMsg.ReadMessage<Messages.CommunicateTeamToClientMessage>();
-		NetworkScript.instance.team = (Team)msg.team;
-		NetworkScript.instance.playerId = msg.id;
+		team = (Team)msg.team;
+		playerId = msg.id;
 		Debug.Log("player id set to: " + msg.id.ToString()); 
 		Debug.Log("joined team: " + msg.team.ToString() + "with player id: " + playerId.ToString());
 		GameObject.Instantiate(teamIndicator,new Vector3(26,111,-2),new Quaternion(0,0,0,0));
