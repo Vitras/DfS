@@ -166,7 +166,6 @@ public class Server : MonoBehaviour
 				break;
 			}
 			int triggerID = (int.Parse (commands [1]) - 1) * 4 + suffixValue;
-			Debug.Log (triggerID);
 			GameObject.Find ("EnvironmentManager").GetComponent<EnvironmentTriggers> ().Trigger (triggerID);
 			return;
 		}
