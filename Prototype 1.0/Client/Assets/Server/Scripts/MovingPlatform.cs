@@ -13,7 +13,7 @@ public class MovingPlatform : MonoBehaviour
 	void Start ()
 	{
 		originalPosition = transform.position;
-//		moving = false;
+		moving = false;
 		FillEffects ();
 		InitializeEffects ();
 		ApplyEffects ();
