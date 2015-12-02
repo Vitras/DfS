@@ -7,11 +7,12 @@ public class RotatingPlatform : MonoBehaviour
 	public bool moving;
 	public Vector3 originalRotation;
 	public float frequency;
+	public TriggerScript trigger;
 	// Use this for initialization
 	void Start ()
 	{
 		moving = false;
-		originalRotation = transform.localRotation.eulerAngles;
+		//originalRotation = transform.localRotation.eulerAngles;
 		//transform.localRotation = Quaternion.Euler (new Vector3(90, 0, 0));
 
 	}
@@ -19,7 +20,7 @@ public class RotatingPlatform : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		if (moving && frequency != 0) {
+		if (((trigger != null && trigger.Triggered) || moving)&& frequency != 0) {
 			transform.Rotate (Vector3.up, 360 * frequency * Time.deltaTime);
 
 			//if (t > Mathf.PI * 2 * period)
