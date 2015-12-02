@@ -47,6 +47,8 @@ public class Server : MonoBehaviour
 		IpIndicator.text = Network.player.ipAddress;
 		eventFeed.text = "Important updates will appear here!";
 
+		ServerSidePlayer dummy = new ServerSidePlayer("unidentified player",Team.None,0,"0.0.0.0");
+		players.Add(0,dummy);
 
 		InvokeRepeating("UpdatePlayerList",5.0f,5.0f);
 		InvokeRepeating("CheckClientStatus",0.0f,5.0f);
@@ -56,10 +58,10 @@ public class Server : MonoBehaviour
 	{
 		var netMsg = new Messages.CheckAliveMessage();
 		NetworkServer.SendToAll(Messages.checkAliveMessageId,netMsg);
-		foreach(KeyValuePair<int,ServerSidePlayer> kvp in players)
-		{
-			kvp.Value.alive = false;
-		}
+		//foreach(KeyValuePair<int,ServerSidePlayer> kvp in players)
+		//{
+			//kvp.Value.aliveCounter = 0;
+		//}
 		sentOutAliveChecks = true;
 	}
 
@@ -70,14 +72,20 @@ public class Server : MonoBehaviour
 			sentOutAliveChecks = false;
 			foreach(ServerSidePlayer p in players.Values)
 			{
-				if(!p.alive)
+				if(p.aliveCounter >= 3)
 				{
 					players.Remove(p.id);
 					var obj = GameObject.Find(p.id.ToString());
 					//Destroy(obj);
 					obj.GetComponent<Text>().color = Color.black;
 					obj.GetComponent<Text>().text += "(d)";
+
 				}
+				else if(p.aliveCounter >= 0 && p.aliveCounter < 3)
+				{
+					p.aliveCounter++;
+				}
+					
 				else
 				{
 					var obj = GameObject.Find(p.id.ToString());
@@ -96,7 +104,7 @@ public class Server : MonoBehaviour
 	{
 		var msg = netMsg.ReadMessage<Messages.RespondAliveMessage>();
 		ServerSidePlayer p = GetPlayerById(msg.id);
-		p.alive = true;
+		p.aliveCounter = 0;
 
 	}
 
@@ -242,14 +250,14 @@ public class ServerSidePlayer
 	public Server.Team teamColor;
 	public string ip;
 	public int id;
-	public bool alive;
+	public int aliveCounter;
 
 	public ServerSidePlayer (string UN, Server.Team team,int identifier,string ip)
 	{
 		userName = UN;
 		teamColor = team;
 		id = identifier;
-		alive = true;
+		aliveCounter = 0;
 
 	}
 }

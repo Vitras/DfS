@@ -21,7 +21,7 @@ public class NetworkScript : MonoBehaviour
 	public GameObject teamIndicator;
 	public Sprite blueTeam,redTeam;
 	public int playerId;
-	public bool hasReceivedAliveCheck = true;
+	public int disconnectCounter = 0;
 
 	// Use this for initialization
 	void Awake ()
@@ -36,7 +36,12 @@ public class NetworkScript : MonoBehaviour
 	
 	public void Resetter()
 	{
+		//foreach(Transform child in transform)
+		//{
+			//Destroy(child.gameObject);
+		//}
 		instance = new NetworkScript();
+		Destroy (gameObject);
 	}
 
 	void Start()
@@ -44,18 +49,22 @@ public class NetworkScript : MonoBehaviour
 		myIp = Network.player.ipAddress;
 		points = 100;
 		team = Team.None;
-		InvokeRepeating("CheckServerStatus",15.0f,15.0f);
+		InvokeRepeating("CheckServerStatus",15.0f,5.0f);
+		disconnectCounter = 0;
 	}
 
 	public void CheckServerStatus()
 	{
-		if(!hasReceivedAliveCheck && Application.loadedLevelName != "Main")
+		if(disconnectCounter >= 3 && Application.loadedLevelName != "Main")
 		{
 			Debug.Log("connection to server lost...");
 			Application.LoadLevel ("Main");
 			Resetter();
 		}
-		hasReceivedAliveCheck = false;
+		else if(disconnectCounter >= 0 && disconnectCounter < 3)
+		{
+			disconnectCounter++;
+		}
 	}
 
 	public void ConnectToServer ()
@@ -85,7 +94,7 @@ public class NetworkScript : MonoBehaviour
 		msg.username = GameObject.Find ("UserNameField").GetComponentsInChildren<Text> () [1].text;
 		client.Send(Messages.initialMessageId,msg);
 		Application.LoadLevel ("InGame");
-		hasReceivedAliveCheck = true;
+		disconnectCounter = 0;
 	}
 
 	public void OnDisconnect(NetworkMessage netMsg)
@@ -101,7 +110,7 @@ public class NetworkScript : MonoBehaviour
 		var msg = new Messages.RespondAliveMessage();
 		msg.id = playerId;
 		client.Send(Messages.respondAliveMessageId,msg);
-		hasReceivedAliveCheck = true;
+		disconnectCounter = 0;
 	}
 
 	public void SendCommandToServer (string command)
@@ -124,9 +133,13 @@ public class NetworkScript : MonoBehaviour
 		GameObject.Instantiate(teamIndicator,new Vector3(26,111,-2),new Quaternion(0,0,0,0));
 		GameObject.Find("Team Indicator(Clone)").transform.parent = transform;
 		if(team == Team.Blue)
+		{
 			GameObject.Find("Team Indicator(Clone)").GetComponent<SpriteRenderer>().sprite = blueTeam;
+		}
 		else
+		{
 			GameObject.Find("Team Indicator(Clone)").GetComponent<SpriteRenderer>().sprite = redTeam;
+		}
 	}
 
 	void OnApplicationQuit()
