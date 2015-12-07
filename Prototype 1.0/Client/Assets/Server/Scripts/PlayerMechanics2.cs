@@ -12,6 +12,7 @@ public class PlayerMechanics2 : MonoBehaviour
 	public string[] animations;
 	public string currentAnimation;
 	private Vector3 correction;
+	private GameObject spawnPoint;
 // Use this for initialization
 	void Start ()
 	{
@@ -19,18 +20,18 @@ public class PlayerMechanics2 : MonoBehaviour
 		Physics.gravity = new Vector3 (0, -40, 0);
 		direction = Vector3.forward;
 		correction = new Vector3 (0, 0.46f, 0);
+		spawnPoint = GameObject.Find ("Spawn");
 	}
 
 // Update is called once per frame
 	void Update ()
 	{	
-		if(Physics.Raycast(transform.position + 8 * correction, Vector3.up, 0.3f) && grounded)
-		{
-			transform.position = GameObject.Find("Spawn").transform.position;
+		if (Physics.Raycast (transform.position + 8 * correction, Vector3.up, 0.3f) && grounded) {
+			transform.position = GameObject.Find ("Spawn").transform.position;
 			transform.SetParent (null);
 			return;
 		}
-		Debug.DrawRay (GetComponent<Rigidbody>().position + 8 * correction, Vector3.up * 0.7f, Color.magenta, 5);
+		Debug.DrawRay (GetComponent<Rigidbody> ().position + 8 * correction, Vector3.up * 0.7f, Color.magenta, 5);
 		if (Input.GetKeyDown (KeyCode.JoystickButton0)) {
 			RaycastHit hit = new RaycastHit ();
 			if (Physics.Raycast (transform.position, direction, out hit, 15)) {
@@ -72,14 +73,10 @@ public class PlayerMechanics2 : MonoBehaviour
 	
 		direction = (h * right + v * forward);
 		direction *= speed;
-		if(grounded)
-		{
-			if(direction.magnitude > 0.2f)
-			{
+		if (grounded) {
+			if (direction.magnitude > 0.2f) {
 				PlayAnimation ("Run");
-			}
-			else
-			{
+			} else {
 				PlayAnimation ("Idle");
 			}
 		}
@@ -90,17 +87,16 @@ public class PlayerMechanics2 : MonoBehaviour
 	{
 		if (col.gameObject.name == "Goal") {
 			GameObject.Find ("EnvironmentManager").GetComponent<Environment> ().CheckObjectives ();
-		} 
-		else if (col.gameObject.tag == "Moving Platform") {
+		} else if (col.gameObject.tag == "Moving Platform") {
 			RaycastHit hit;
-			if(Physics.Raycast (GetComponent<Rigidbody>().position + correction, Vector3.down, out hit, 0.7f) && hit.transform.gameObject == col.gameObject)
+			if (Physics.Raycast (GetComponent<Rigidbody> ().position + correction, Vector3.down, out hit, 0.7f) && hit.transform.gameObject == col.gameObject)
 				transform.SetParent (col.gameObject.transform.parent);
 		}	
 	}
 
 	void OnTriggerEnter (Collider col)
 	{
-		
+		spawnPoint.transform.position = transform.position;
 		if (col.gameObject.tag == "Objective A") {
 			GameObject.Find ("EnvironmentManager").GetComponent<Environment> ().ScoreRed++;
 			col.gameObject.GetComponent<SphereCollider> ().enabled = false;
@@ -112,11 +108,11 @@ public class PlayerMechanics2 : MonoBehaviour
 	}
 	void OnCollisionExit (Collision col)
 	{
-		if (col.gameObject.tag == "Moving Platform"){
+		if (col.gameObject.tag == "Moving Platform") {
 			RaycastHit hit;
-		if(!Physics.Raycast (GetComponent<Rigidbody>().position + correction, Vector3.down, out hit, 0.5f))
-			transform.SetParent (null);
-			   }
+			if (!Physics.Raycast (GetComponent<Rigidbody> ().position + correction, Vector3.down, out hit, 0.5f))
+				transform.SetParent (null);
+		}
 	}
 
 
@@ -133,10 +129,10 @@ public class PlayerMechanics2 : MonoBehaviour
 			|| Physics.Raycast (origin + new Vector3 (0, 0, -size.z * 2), Vector3.down, 2.5f);
 	}
 
-	void PlayAnimation(string name)
+	void PlayAnimation (string name)
 	{
-		if(name != currentAnimation)
-			this.GetComponent<Animation>().Play (name);
+		if (name != currentAnimation)
+			this.GetComponent<Animation> ().Play (name);
 	}
 }
 
