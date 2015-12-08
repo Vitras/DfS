@@ -97,13 +97,8 @@ public class PlayerMechanics2 : MonoBehaviour
 	void OnTriggerEnter (Collider col)
 	{
 		spawnPoint.transform.position = transform.position;
-		if (col.gameObject.tag == "Objective A") {
-			GameObject.Find ("EnvironmentManager").GetComponent<Environment> ().ScoreRed++;
-			col.gameObject.GetComponent<SphereCollider> ().enabled = false;
-
-		} else if (col.gameObject.tag == "Objective B") {
-			GameObject.Find ("EnvironmentManager").GetComponent<Environment> ().ScoreBlue++;
-			col.gameObject.GetComponent<SphereCollider> ().enabled = false;
+		if (col.gameObject.tag == "Objective A" || col.gameObject.tag == "Objective B") {
+			GameObject.Find ("ObjectiveManager").GetComponent<ObjectiveManager> ().SetNewObjectives (col.transform);
 		}
 	}
 	void OnCollisionExit (Collision col)
