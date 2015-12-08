@@ -39,7 +39,7 @@ public class ObjectiveManager : MonoBehaviour
 		else 
 			GameObject.Find ("EnvironmentManager").GetComponent<Environment> ().ScoreBlue++;
 		Reset ();
-		int number = int.Parse (objective.name.Split ('|') [1]);
+		int number = int.Parse (objective.name.Split ('|') [1]) - 1;
 		int x = number / 3;
 		int y = number % 3;
 		List<Transform> eligible = EligibleObjectives (x, y);
