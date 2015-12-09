@@ -168,6 +168,16 @@ public class NetworkScript : MonoBehaviour
 		Application.Quit();
 	}
 
+	public int Points
+	{
+		get{return points;}
+		set
+		{
+			points = value;
+			if(points < 0)
+				points = 0;
+		}
+	}
 
 }
 
