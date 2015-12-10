@@ -10,7 +10,6 @@ public class ReactionGameControllerScript : MonoBehaviour {
 	public List<GameObject> spawnedPuddings;
 	public GameObject Piston;
 	public Sprite puddingMonster;
-	public Text scoreBox;
 	public Text hitIndicator;
 	public GameObject panel;
 

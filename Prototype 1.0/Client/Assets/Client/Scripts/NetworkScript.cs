@@ -93,7 +93,7 @@ public class NetworkScript : MonoBehaviour
 		msg.ip = myIp;
 		msg.username = GameObject.Find ("UserNameField").GetComponentsInChildren<Text> () [1].text;
 		client.Send(Messages.initialMessageId,msg);
-		Application.LoadLevel ("InGame");
+		Application.LoadLevel ("Minimap");
 		disconnectCounter = 0;
 	}
 
