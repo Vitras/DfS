@@ -49,8 +49,8 @@ public class NetworkScript : MonoBehaviour
 		myIp = Network.player.ipAddress;
 		points = 100;
 		team = Team.None;
-		InvokeRepeating("CheckServerStatus",15.0f,5.0f);
-		disconnectCounter = 0;
+		//InvokeRepeating("CheckServerStatus",15.0f,5.0f);
+		//disconnectCounter = 0;
 	}
 
 	public void CheckServerStatus()

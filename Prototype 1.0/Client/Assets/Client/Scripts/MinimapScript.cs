@@ -102,7 +102,6 @@ public class MinimapScript : MonoBehaviour
 
 		}
 	}
-	//   "Buttons/App_",
 
 	public void configureMapButtons(int button,string colorPath ,string leftPath, string rightPath, string topPath, string bottomPath,bool leftButtonActive,bool rightButtonActive, bool topButtonActive, bool bottomButtonActive)
 	{
@@ -137,30 +136,23 @@ public class MinimapScript : MonoBehaviour
 		activeColor = button;
 	}
 
+
+
 	public void PanelButtonOnClick(string direction)
 	{
 
-		if(direction == "return")
-		{
-			panelOpen = false;
-			GameObject.Destroy(lastCreatedPanel);
-			return;
-		}
 
-		if(NetworkScript.instance.Points >= 100)
+		if(NetworkScript.instance.Points >= 50)
 		{
-			NetworkScript.instance.SendCommandToServer("T|" + lastOpenedPanel.ToString() + "|" + direction);
-			Debug.Log("command sent: " +  "T|" + lastOpenedPanel.ToString() + "|" + direction);
-			NetworkScript.instance.Points -= 100;
+			NetworkScript.instance.SendCommandToServer("T|" + activeColor.ToString() + "|" + direction);
+			Debug.Log("command sent: " +  "T|" + activeColor.ToString() + "|" + direction);
+			NetworkScript.instance.Points -= 50;
 		}
 		else
 		{
 			notificationIndicator.text = "Not enough points!";
 			StartCoroutine(ClearNotification(3.0f));
 		}
-
-		panelOpen = false;
-		GameObject.Destroy(lastCreatedPanel);
 
 	}
 
