@@ -6,6 +6,7 @@ public class ObjectiveManager : MonoBehaviour
 {
 	private const int MAX_DIFFERENCE = 1;
 	private Transform[,] objectives;
+	public GameObject server;
 	// Use this for initialization
 	void Start ()
 	{
@@ -44,14 +45,20 @@ public class ObjectiveManager : MonoBehaviour
 		int y = number % 3;
 		List<Transform> eligible = EligibleObjectives (x, y);
 		int random = Random.Range (0, eligible.Count);
+		int red = int.Parse(eligible[random].name.Split('|')[1]);
 		Transform obA = eligible [random];
 		eligible.RemoveAt (random);
 		random = Random.Range (0, eligible.Count);
+		int blue = int.Parse(eligible[random].name.Split('|')[1]);
 		Transform obB = eligible [random];
 		obA.gameObject.SetActive (true);
 		obA.tag = "Objective A";
 		obB.gameObject.SetActive (true);
 		obB.tag = "Objective B";
+
+		//server.GetComponent<Server>().SendObjectivesToAllClients(blue,red);
+		//server.GetComponent<Server>().redObjective = red;
+		//server.GetComponent<Server>().blueObjective = blue;
 	}
 
 	List<Transform> EligibleObjectives (int xPos, int yPos)

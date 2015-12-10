@@ -39,6 +39,7 @@ public class DisconnectButtonScript : MonoBehaviour
 	{
 		yield return new WaitForSeconds(0.5f);
 		nwm.client.Disconnect();
+		nwm.hasReconnected = false;
 	}
 }
 

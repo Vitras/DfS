@@ -18,7 +18,7 @@ public class Server : MonoBehaviour
 	private object thisLock = new object();
 	public int idGenerator = 1000;
 	public GameObject listItemPrefab;
-	private bool sentOutAliveChecks = false;
+	public int redObjective = -1,blueObjective = -1;
 	public enum Team
 	{
 		Red=0,
@@ -41,72 +41,39 @@ public class Server : MonoBehaviour
 		NetworkServer.RegisterHandler (Messages.initialMessageId, OnReceiveInitialMessage);
 		//listener for disconnectmessages from client
 		NetworkServer.RegisterHandler (Messages.clientDisconnectMessageId, OnReceiveClientDisconnectMessage);
-		//listener for responds to alive checks
-		NetworkServer.RegisterHandler (Messages.respondAliveMessageId, OnReceiveAliveMessageFromClient);
 		//Populate the ip address indicator and event feed
 		IpIndicator.text = Network.player.ipAddress;
 		eventFeed.text = "Important updates will appear here!";
 
-		ServerSidePlayer dummy = new ServerSidePlayer("unidentified player",Team.None,0,"0.0.0.0");
-		players.Add(0,dummy);
+		//ServerSidePlayer dummy = new ServerSidePlayer("unidentified player",Team.None,0,"0.0.0.0");
+		///players.Add(0,dummy);
+		
+		InvokeRepeating("UpdatePlayerList",0.0f,3.0f);
 
-		//InvokeRepeating("UpdatePlayerList",5.0f,5.0f);
-		//InvokeRepeating("CheckClientStatus",0.0f,5.0f);
 	}
-
-	public void CheckClientStatus()
-	{
-		var netMsg = new Messages.CheckAliveMessage();
-		NetworkServer.SendToAll(Messages.checkAliveMessageId,netMsg);
-		//foreach(KeyValuePair<int,ServerSidePlayer> kvp in players)
-		//{
-			//kvp.Value.aliveCounter = 0;
-		//}
-		sentOutAliveChecks = true;
-	}
+	
 
 	public void UpdatePlayerList()
 	{
-		if(sentOutAliveChecks)
+
+		foreach(Transform child in playerListContent.transform)
 		{
-			sentOutAliveChecks = false;
-			foreach(ServerSidePlayer p in players.Values)
-			{
-				if(p.aliveCounter >= 3)
-				{
-					players.Remove(p.id);
-					var obj = GameObject.Find(p.id.ToString());
-					//Destroy(obj);
-					obj.GetComponent<Text>().color = Color.black;
-					obj.GetComponent<Text>().text += "(d)";
-
-				}
-				else if(p.aliveCounter >= 0 && p.aliveCounter < 3)
-				{
-					p.aliveCounter++;
-				}
-					
-				else
-				{
-					var obj = GameObject.Find(p.id.ToString());
-					if(p.teamColor == Team.Blue)
-						obj.GetComponent<Text>().color = Color.blue;
-					else
-						obj.GetComponent<Text>().color = Color.red;
-
-					obj.GetComponent<Text>().text = p.userName;
-				}
-			}
+			Destroy(child.gameObject);
+		}
+		foreach(KeyValuePair<int,ServerSidePlayer> kvp in players)
+		{
+			var comp = Instantiate(listItemPrefab) as GameObject;
+			comp.GetComponent<Text>().text = kvp.Value.userName;
+			comp.name = kvp.Key.ToString();
+			if(kvp.Value.teamColor == Team.Blue)
+				comp.GetComponent<Text>().color = Color.blue;
+			else if(kvp.Value.teamColor == Team.Red)
+				comp.GetComponent<Text>().color = Color.red;
+			
+			comp.transform.SetParent(playerListContent.transform,false);
 		}
 	}
-
-	public void OnReceiveAliveMessageFromClient(NetworkMessage netMsg)
-	{
-		var msg = netMsg.ReadMessage<Messages.RespondAliveMessage>();
-		ServerSidePlayer p = GetPlayerById(msg.id);
-		p.aliveCounter = 0;
-
-	}
+	
 
 	void OnApplicationQuit ()
 	{
@@ -131,15 +98,7 @@ public class Server : MonoBehaviour
 		}
 		Debug.Log ("Added player: " + msg.username + " with ip: " + msg.ip + " and id: " + p.id.ToString() + " To the playerlog.");
 		eventFeed.text = msg.username + " joined the game on team: " + balancedTeamChoice.ToString () + " !";
-		var comp = Instantiate(listItemPrefab) as GameObject;
-		comp.GetComponent<Text>().text = msg.username;
-		comp.name = p.id.ToString();
-		if(p.teamColor == Team.Blue)
-			comp.GetComponent<Text>().color = Color.blue;
-		else if(p.teamColor == Team.Red)
-			comp.GetComponent<Text>().color = Color.red;
-		 
-		comp.transform.SetParent(playerListContent.transform,false);
+
 	
 		//send team message here
 		//
@@ -147,6 +106,12 @@ public class Server : MonoBehaviour
 		teamMsg.team = (int)balancedTeamChoice;
 		teamMsg.id = p.id;
 		netMsg.conn.Send (Messages.communicateTeamToClientMessageId, teamMsg);
+
+		//send objectives
+		//var objMsg = new Messages.ObjectiveMessage();
+		//objMsg.blueObjective = blueObjective;
+		//objMsg.redObjective = redObjective;
+		//netMsg.conn.Send(Messages.objectiveMessageId,objMsg);
 	}
 
 	public void OnReceiveCommand (NetworkMessage netMsg)
@@ -182,6 +147,15 @@ public class Server : MonoBehaviour
 		} 
 		//
 	}
+
+	public void SendObjectivesToAllClients(int blue, int red)
+	{
+		var msg = new Messages.ObjectiveMessage();
+		msg.blueObjective = blue;
+		msg.redObjective = red;
+		NetworkServer.SendToAll(Messages.objectiveMessageId,msg);
+	}
+	
 
 	public void OnReceiveClientDisconnectMessage (NetworkMessage netMsg)
 	{
