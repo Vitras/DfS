@@ -1,15 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Menu : MonoBehaviour {
+public class Menu
+{
+	public bool Done { get; set; }
 
-	// Use this for initialization
-	void Start () {
-	
+	public Menu ()
+	{
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	public virtual void Update ()
+	{
+	}
+
+	public virtual void Continue ()
+	{
+	}
+	public virtual void Suspend ()
+	{
+	}
+	public virtual void Exit ()
+	{
 	}
 }
