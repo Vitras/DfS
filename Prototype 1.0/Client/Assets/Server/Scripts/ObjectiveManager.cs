@@ -45,11 +45,11 @@ public class ObjectiveManager : MonoBehaviour
 		int y = number % 3;
 		List<Transform> eligible = EligibleObjectives (x, y);
 		int random = Random.Range (0, eligible.Count);
-		int red = int.Parse(eligible[random].name.Split('|')[1]);
+		int red = int.Parse (eligible [random].name.Split ('|') [1]);
 		Transform obA = eligible [random];
 		eligible.RemoveAt (random);
 		random = Random.Range (0, eligible.Count);
-		int blue = int.Parse(eligible[random].name.Split('|')[1]);
+		int blue = int.Parse (eligible [random].name.Split ('|') [1]);
 		Transform obB = eligible [random];
 		obA.gameObject.SetActive (true);
 		obA.tag = "Objective A";
