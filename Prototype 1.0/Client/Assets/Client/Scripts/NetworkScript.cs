@@ -18,10 +18,12 @@ public class NetworkScript : MonoBehaviour
 	public int points;
 	public enum Team {Red=0,Blue=1,None=9};
 	private Team team;
-	public GameObject teamIndicator;
-	public Sprite blueTeam,redTeam;
 	public int playerId;
 	public int disconnectCounter = 0;
+	public bool hasReconnected = false;
+	public string lastConnectedIp;
+	public GameObject listItem;
+	private string userName;
 
 	// Use this for initialization
 	void Awake ()
@@ -53,20 +55,6 @@ public class NetworkScript : MonoBehaviour
 		//disconnectCounter = 0;
 	}
 
-	public void CheckServerStatus()
-	{
-		if(disconnectCounter >= 3 && Application.loadedLevelName != "Main")
-		{
-			Debug.Log("connection to server lost...");
-			Application.LoadLevel ("Main");
-			Resetter();
-		}
-		else if(disconnectCounter >= 0 && disconnectCounter < 3)
-		{
-			disconnectCounter++;
-		}
-	}
-
 	public void ConnectToServer ()
 	{
 		Debug.Log ("trying to connect...");
@@ -80,21 +68,55 @@ public class NetworkScript : MonoBehaviour
 		client.RegisterHandler (MsgType.Connect, OnConnected);
 		client.RegisterHandler (MsgType.Disconnect, OnDisconnect);
 		client.RegisterHandler (Messages.communicateTeamToClientMessageId,OnReceiveTeamMessage);
-		client.RegisterHandler (Messages.checkAliveMessageId,OnReceiveAliveCheckMessage);
 		client.Connect (serverIP, port);
+		lastConnectedIp = serverIP;
 		
+	}
+
+	public void ReconnectToServer(string ip)
+	{
+		Debug.Log ("trying to connect...");
+		serverIP = ip;
+		if (serverIP == "") {
+			//connect to localhost by default
+			serverIP = "127.0.0.1";
+		}
+		//GameObject.Find ("TitleText").GetComponent<Text> ().text = "Connecting to " + serverIP + "  ........";
+		client = new NetworkClient ();
+		client.RegisterHandler (MsgType.Connect, OnConnected);
+		client.RegisterHandler (MsgType.Disconnect, OnDisconnect);
+		client.RegisterHandler (Messages.communicateTeamToClientMessageId,OnReceiveTeamMessage);
+		client.Connect (serverIP, port);
+		lastConnectedIp = serverIP;
 	}
 
 
 	public void OnConnected (NetworkMessage netMsg)
 	{
-		Debug.Log ("Connected to server");
-		var msg = new Messages.InitialMessage();
-		msg.ip = myIp;
-		msg.username = GameObject.Find ("UserNameField").GetComponentsInChildren<Text> () [1].text;
-		client.Send(Messages.initialMessageId,msg);
-		Application.LoadLevel ("Minimap");
-		disconnectCounter = 0;
+		if(hasReconnected)
+		{
+			Debug.Log ("reConnected to server");
+			//var msg = new Messages.InitialMessage();
+			//msg.ip = myIp;
+			//msg.username = GameObject.Find ("UserNameField").GetComponentsInChildren<Text> () [1].text;
+			//client.Send(Messages.initialMessageId,msg);
+			//Application.LoadLevel ("Minimap");
+			//disconnectCounter = 0;
+			//TODO post message abou this in app event log
+			PostInUpdateLog("Reconnected! All is good", Color.black);
+		}
+		else
+		{
+			Debug.Log ("Connected to server");
+			var msg = new Messages.InitialMessage();
+			msg.ip = myIp;
+			msg.username = GameObject.Find ("UserNameField").GetComponentsInChildren<Text> () [1].text;
+			client.Send(Messages.initialMessageId,msg);
+			userName = GameObject.Find ("UserNameField").GetComponentsInChildren<Text> () [1].text;
+			Application.LoadLevel ("Minimap");
+			disconnectCounter = 0;
+			PostInUpdateLog("Connected to server! Enjoy!", Color.black);
+		}
 	}
 
 	public void OnDisconnect(NetworkMessage netMsg)
@@ -103,15 +125,31 @@ public class NetworkScript : MonoBehaviour
 		//TODO implement wait for reconnect scene
 		//Application.LoadLevel ("Main");
 		//DestroyImmediate(transform.gameObject);
+
+		disconnectCounter++;
+		if(disconnectCounter <= 3)
+		{
+			ReconnectToServer(lastConnectedIp);
+			hasReconnected = true;
+			PostInUpdateLog("Connection lost... trying to reconnect!", Color.black);
+		}
+		else
+		{
+			PostInUpdateLog("Cannot reconnect :( is the server still running?", Color.black);
+		}
 	}
 
-	public void OnReceiveAliveCheckMessage(NetworkMessage netMsg)
+	public void PostInUpdateLog(string text, Color color)
 	{
-		var msg = new Messages.RespondAliveMessage();
-		msg.id = playerId;
-		client.Send(Messages.respondAliveMessageId,msg);
-		disconnectCounter = 0;
+		if(GameObject.Find("MinimapController").GetComponent<MinimapScript>() != null)
+		{
+			var item = Instantiate(listItem) as GameObject;
+			item.GetComponent<Text>().text = text;
+			item.GetComponent<Text>().color = color;
+			item.transform.SetParent(GameObject.Find("MinimapController").GetComponent<MinimapScript>().updateLog.transform,false);
+		}
 	}
+	
 
 	public void SendCommandToServer (string command)
 	{
@@ -130,16 +168,19 @@ public class NetworkScript : MonoBehaviour
 		playerId = msg.id;
 		Debug.Log("player id set to: " + msg.id.ToString()); 
 		Debug.Log("joined team: " + msg.team.ToString() + "with player id: " + playerId.ToString());
-		GameObject.Instantiate(teamIndicator,new Vector3(26,111,-2),new Quaternion(0,0,0,0));
-		GameObject.Find("Team Indicator(Clone)").transform.parent = transform;
+		GameObject.Find("Username").GetComponent<Text>().text = userName;
 		if(team == Team.Blue)
 		{
-			GameObject.Find("Team Indicator(Clone)").GetComponent<SpriteRenderer>().sprite = blueTeam;
+			PostInUpdateLog("Joined team Blue!", Color.blue);
+			GameObject.Find("Username").GetComponent<Text>().color = Color.blue;
+
 		}
 		else
 		{
-			GameObject.Find("Team Indicator(Clone)").GetComponent<SpriteRenderer>().sprite = redTeam;
+			PostInUpdateLog("Joined team Red!", Color.red);
+			GameObject.Find("Username").GetComponent<Text>().color = Color.red;
 		}
+
 	}
 
 	void OnApplicationQuit()

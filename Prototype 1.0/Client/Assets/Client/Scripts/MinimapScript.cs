@@ -4,17 +4,14 @@ using System.Collections;
 
 public class MinimapScript : MonoBehaviour 
 {
-
-	public GameObject smallPanel;
+	
 	public Canvas canvas;
-	private bool panelOpen = false;
-	private int lastOpenedPanel = 0;
-	private GameObject lastCreatedPanel;
 	public Text notificationIndicator,pointsIndicator;
 	public GameObject mappanel, controlPanel;
 	public GameObject leftButton,rightButton,topButton,bottomButton;
 	public GameObject colorIndicator1,colorIndicator2;
 	public int activeColor = 1;
+	public GameObject updateLog;
 
 	// Use this for initialization
 	void Start () 
@@ -28,18 +25,6 @@ public class MinimapScript : MonoBehaviour
 	}
 
 
-	public void ButtonClick(int button)
-	{
-		if(!panelOpen)
-		{
-			GameObject panel = Instantiate(smallPanel) as GameObject;
-			panel.transform.SetParent(canvas.transform,false);
-			panelOpen = true;
-			lastOpenedPanel = button;
-			lastCreatedPanel = panel;
-
-		}
-	}
 
 	public void MapButtonClick(int button)
 	{
