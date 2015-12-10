@@ -49,8 +49,8 @@ public class NetworkScript : MonoBehaviour
 		myIp = Network.player.ipAddress;
 		points = 100;
 		team = Team.None;
-		InvokeRepeating("CheckServerStatus",15.0f,5.0f);
-		disconnectCounter = 0;
+		//InvokeRepeating("CheckServerStatus",15.0f,5.0f);
+		//disconnectCounter = 0;
 	}
 
 	public void CheckServerStatus()
@@ -93,7 +93,7 @@ public class NetworkScript : MonoBehaviour
 		msg.ip = myIp;
 		msg.username = GameObject.Find ("UserNameField").GetComponentsInChildren<Text> () [1].text;
 		client.Send(Messages.initialMessageId,msg);
-		Application.LoadLevel ("InGame");
+		Application.LoadLevel ("Minimap");
 		disconnectCounter = 0;
 	}
 
@@ -168,6 +168,16 @@ public class NetworkScript : MonoBehaviour
 		Application.Quit();
 	}
 
+	public int Points
+	{
+		get{return points;}
+		set
+		{
+			points = value;
+			if(points < 0)
+				points = 0;
+		}
+	}
 
 }
 

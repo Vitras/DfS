@@ -4,15 +4,14 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class ReactionGameControllerScript : MonoBehaviour {
-
-	public int points;
+	
 	public GameObject pudding;
 	public GameObject SpawnPoint;
 	public List<GameObject> spawnedPuddings;
 	public GameObject Piston;
 	public Sprite puddingMonster;
-	public Text scoreBox;
 	public Text hitIndicator;
+	public GameObject panel;
 
 	//audio stuff
 	private AudioSource source;
@@ -22,7 +21,6 @@ public class ReactionGameControllerScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-		points = 0;
 		InvokeRepeating("EverySecond",0,1.0f);
 		spawnedPuddings = new List<GameObject>();
 		//
@@ -39,7 +37,8 @@ public class ReactionGameControllerScript : MonoBehaviour {
 		if (random == 2)
 			return;
 		GameObject onePudding = (GameObject)Instantiate(pudding,SpawnPoint.transform.position,transform.rotation);
-		onePudding.GetComponent<PuddingScript>().parent = this.gameObject;
+		onePudding.GetComponent<PuddingScript>().transform.SetParent(panel.transform,true);
+
 		spawnedPuddings.Add(onePudding);
 
 
@@ -51,12 +50,9 @@ public class ReactionGameControllerScript : MonoBehaviour {
 		foreach(GameObject p in spawnedPuddings)
 		{
 			Vector3 pos = p.transform.position;
-			pos.x++;
+			pos.x += 3;
 			p.transform.position = pos;
 		}
-		if (points < 0)
-			points = 0;
-		scoreBox.text = points.ToString();
 
 		Color hitIndicatorColor = hitIndicator.color;
 		float hitIndicatorAlpha = hitIndicatorColor.a;
@@ -68,18 +64,12 @@ public class ReactionGameControllerScript : MonoBehaviour {
 		}
 
 	}
-
-	public void ReturnToIdle()
-	{
-
-		NetworkScript.instance.points += points;
-		Application.LoadLevel("InGame");
-	}
+	
 
 	IEnumerator TransformPuddingDelay(GameObject p)
 	{
 		yield return new WaitForSeconds(0.4f);
-		p.GetComponent<SpriteRenderer>().sprite = puddingMonster;
+		p.GetComponent<Image>().sprite = puddingMonster;
 	}
 	
 
@@ -89,17 +79,17 @@ public class ReactionGameControllerScript : MonoBehaviour {
 		switch(i)
 		{
 		case 0:
-			points += 10;
+			NetworkScript.instance.Points += 10;
 			hitIndicator.color = Color.cyan;
 			hitIndicator.text = "Perfect! +10";
 			break;
 		case 1:
-			points += 5;
+			NetworkScript.instance.Points += 5;
 			hitIndicator.color = Color.green;
 			hitIndicator.text = "Good! +5";
 			break;
 		default:
-			points -= 5;
+			NetworkScript.instance.Points -= 5;
 			hitIndicator.color = Color.red;
 			hitIndicator.text = "Miss! -5";
 			break;
@@ -115,7 +105,7 @@ public class ReactionGameControllerScript : MonoBehaviour {
 		foreach(GameObject p in spawnedPuddings)
 		{
 			PuddingScript script = p.GetComponent<PuddingScript>();
-			if (p.transform.position.x >= 31 && p.transform.position.x <= 35 && script.success == false)
+			if (p.transform.localPosition.x >= 100 && p.transform.localPosition.x <= 125 && script.success == false)
 			{
 				//Debug.Log("got 10 pts for hitting " + spawnedPuddings.IndexOf(p).ToString() + " perfectly");
 				StartCoroutine(TransformPuddingDelay(p));
@@ -124,7 +114,7 @@ public class ReactionGameControllerScript : MonoBehaviour {
 				source.PlayOneShot(pistonSfx);
 				return;
 			}
-			else if(p.transform.position.x >= 27 && p.transform.position.x <= 43 && script.success == false)
+			else if(p.transform.localPosition.x >= 75 && p.transform.localPosition.x <= 175 && script.success == false)
 			{
 				//Debug.Log("got 5 pts for hitting " + spawnedPuddings.IndexOf(p).ToString());
 				StartCoroutine(TransformPuddingDelay(p));
@@ -147,7 +137,7 @@ public class ReactionGameControllerScript : MonoBehaviour {
 			return;
 		}
 
-		points -= 5;
+		NetworkScript.instance.points -= 5;
 		//Debug.Log("5 points deducted for using the piston when there was nothing to hit");
 		StartCoroutine(ChangeHitIndicatorText(2));
 		source.PlayOneShot(pistonMissedSfx);

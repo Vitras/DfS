@@ -50,8 +50,8 @@ public class Server : MonoBehaviour
 		ServerSidePlayer dummy = new ServerSidePlayer("unidentified player",Team.None,0,"0.0.0.0");
 		players.Add(0,dummy);
 
-		InvokeRepeating("UpdatePlayerList",5.0f,5.0f);
-		InvokeRepeating("CheckClientStatus",0.0f,5.0f);
+		//InvokeRepeating("UpdatePlayerList",5.0f,5.0f);
+		//InvokeRepeating("CheckClientStatus",0.0f,5.0f);
 	}
 
 	public void CheckClientStatus()
