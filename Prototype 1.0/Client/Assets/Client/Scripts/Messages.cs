@@ -7,9 +7,8 @@ public class Messages
 	public const short commandMessageId = 1000;
 	public const short initialMessageId = 1001;
 	public const short clientDisconnectMessageId = 1002;
-	public const short respondAliveMessageId = 1003;
 	public const short communicateTeamToClientMessageId = 2000;
-	public const short checkAliveMessageId = 2001;
+	public const short objectiveMessageId = 2001;
 
 
 	public class InitialMessage : MessageBase
@@ -36,14 +35,11 @@ public class Messages
 		public int team;
 		public int id;
 	}
+	
 
-	public class CheckAliveMessage : MessageBase
+	public class ObjectiveMessage : MessageBase
 	{
-
-	}
-
-	public class RespondAliveMessage : MessageBase
-	{
-		public int id;
+		public int redObjective;
+		public int blueObjective;
 	}
 }

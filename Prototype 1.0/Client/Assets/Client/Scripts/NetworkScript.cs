@@ -24,6 +24,7 @@ public class NetworkScript : MonoBehaviour
 	public string lastConnectedIp;
 	public GameObject listItem;
 	private string userName;
+	public GameObject objective;
 
 	// Use this for initialization
 	void Awake ()
@@ -67,6 +68,7 @@ public class NetworkScript : MonoBehaviour
 		client = new NetworkClient ();
 		client.RegisterHandler (MsgType.Connect, OnConnected);
 		client.RegisterHandler (MsgType.Disconnect, OnDisconnect);
+		client.RegisterHandler (Messages.objectiveMessageId,OnReceiveObjectives);
 		client.RegisterHandler (Messages.communicateTeamToClientMessageId,OnReceiveTeamMessage);
 		client.Connect (serverIP, port);
 		lastConnectedIp = serverIP;
@@ -86,6 +88,7 @@ public class NetworkScript : MonoBehaviour
 		client.RegisterHandler (MsgType.Connect, OnConnected);
 		client.RegisterHandler (MsgType.Disconnect, OnDisconnect);
 		client.RegisterHandler (Messages.communicateTeamToClientMessageId,OnReceiveTeamMessage);
+		client.RegisterHandler (Messages.objectiveMessageId,OnReceiveObjectives);
 		client.Connect (serverIP, port);
 		lastConnectedIp = serverIP;
 	}
@@ -131,17 +134,45 @@ public class NetworkScript : MonoBehaviour
 		{
 			ReconnectToServer(lastConnectedIp);
 			hasReconnected = true;
-			PostInUpdateLog("Connection lost... trying to reconnect!", Color.black);
+			PostInUpdateLog("Connection lost... trying to reconnect!", Color.gray);
 		}
 		else
 		{
-			PostInUpdateLog("Cannot reconnect :( is the server still running?", Color.black);
+			PostInUpdateLog("Cannot reconnect :( is the server still running?", Color.gray);
+		}
+	}
+
+	public void OnReceiveObjectives(NetworkMessage netMsg)
+	{
+		var msg = netMsg.ReadMessage<Messages.ObjectiveMessage>();
+		PostInUpdateLog("Received new objective locations!",Color.black);
+		GameObject mapButtons = GameObject.Find("MapButtons");
+		foreach(Transform child in mapButtons.transform)
+		{
+			foreach(Transform grandChild in child.transform)
+			{
+				Destroy(grandChild.gameObject);
+			}
+			Debug.Log(child.name.Split('n')[1]);
+			Debug.Log(msg.blueObjective.ToString());
+			if(child.name.Split('n')[1] == (msg.blueObjective + 1).ToString())
+			{
+				var indicator = Instantiate(objective);
+				indicator.GetComponent<Image>().color = Color.blue;
+				indicator.transform.SetParent(child,false);
+			}
+			if(child.name.Split('n')[1] == (msg.redObjective + 1).ToString())
+			{
+				var indicator = Instantiate(objective);
+				indicator.GetComponent<Image>().color = Color.red;
+				indicator.transform.SetParent(child,false);
+			}
 		}
 	}
 
 	public void PostInUpdateLog(string text, Color color)
 	{
-		if(GameObject.Find("MinimapController").GetComponent<MinimapScript>() != null)
+		if(GameObject.Find("MinimapController") != null)
 		{
 			var item = Instantiate(listItem) as GameObject;
 			item.GetComponent<Text>().text = text;

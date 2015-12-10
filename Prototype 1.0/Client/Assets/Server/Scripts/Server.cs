@@ -18,6 +18,7 @@ public class Server : MonoBehaviour
 	private object thisLock = new object();
 	public int idGenerator = 1000;
 	public GameObject listItemPrefab;
+	public int redObjective = -1,blueObjective = -1;
 	public enum Team
 	{
 		Red=0,
@@ -46,7 +47,7 @@ public class Server : MonoBehaviour
 
 		//ServerSidePlayer dummy = new ServerSidePlayer("unidentified player",Team.None,0,"0.0.0.0");
 		///players.Add(0,dummy);
-
+		
 		InvokeRepeating("UpdatePlayerList",0.0f,3.0f);
 
 	}
@@ -71,42 +72,6 @@ public class Server : MonoBehaviour
 			
 			comp.transform.SetParent(playerListContent.transform,false);
 		}
-
-
-
-		//
-
-//		if(sentOutAliveChecks)
-//		{
-//			sentOutAliveChecks = false;
-//			foreach(ServerSidePlayer p in players.Values)
-//			{
-//				if(p.aliveCounter >= 3)
-//				{
-//					players.Remove(p.id);
-//					var obj = GameObject.Find(p.id.ToString());
-//					//Destroy(obj);
-//					obj.GetComponent<Text>().color = Color.black;
-//					obj.GetComponent<Text>().text += "(d)";
-//
-//				}
-//				else if(p.aliveCounter >= 0 && p.aliveCounter < 3)
-//				{
-//					p.aliveCounter++;
-//				}
-//					
-//				else
-//				{
-//					var obj = GameObject.Find(p.id.ToString());
-//					if(p.teamColor == Team.Blue)
-//						obj.GetComponent<Text>().color = Color.blue;
-//					else
-//						obj.GetComponent<Text>().color = Color.red;
-//
-//					obj.GetComponent<Text>().text = p.userName;
-//				}
-//			}
-//		}
 	}
 	
 
@@ -141,6 +106,12 @@ public class Server : MonoBehaviour
 		teamMsg.team = (int)balancedTeamChoice;
 		teamMsg.id = p.id;
 		netMsg.conn.Send (Messages.communicateTeamToClientMessageId, teamMsg);
+
+		//send objectives
+		//var objMsg = new Messages.ObjectiveMessage();
+		//objMsg.blueObjective = blueObjective;
+		//objMsg.redObjective = redObjective;
+		//netMsg.conn.Send(Messages.objectiveMessageId,objMsg);
 	}
 
 	public void OnReceiveCommand (NetworkMessage netMsg)
@@ -176,6 +147,15 @@ public class Server : MonoBehaviour
 		} 
 		//
 	}
+
+	public void SendObjectivesToAllClients(int blue, int red)
+	{
+		var msg = new Messages.ObjectiveMessage();
+		msg.blueObjective = blue;
+		msg.redObjective = red;
+		NetworkServer.SendToAll(Messages.objectiveMessageId,msg);
+	}
+	
 
 	public void OnReceiveClientDisconnectMessage (NetworkMessage netMsg)
 	{
