@@ -12,8 +12,8 @@ public class Environment : MonoBehaviour
 	 */
 
 	int currentObjective;
-	public int ScoreRed {get; set;}
-	public int ScoreBlue{get; set;}
+	public int ScoreRed { get; set; }
+	public int ScoreBlue{ get; set; }
 	public GameObject canvas;
 	public GameObject ScoreRedIndicator;
 	public GameObject ScoreBlueIndicator;
@@ -36,27 +36,31 @@ public class Environment : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		ScoreRedIndicator.GetComponent<Text>().text = "Red team: " + ScoreRed.ToString ();
-		ScoreBlueIndicator.GetComponent<Text>().text = "Blue team: " + ScoreBlue.ToString ();
+		ScoreRedIndicator.GetComponent<Text> ().text = "Red team: " + ScoreRed.ToString ();
+		ScoreBlueIndicator.GetComponent<Text> ().text = "Blue team: " + ScoreBlue.ToString ();
+		if (ScoreRed + ScoreBlue >= GameObject.Find ("Master").GetComponent<Master> ().pointsToWin) {
+			GameObject.Find ("Master").GetComponent<Master> ().EndGame ();
+			Application.LoadLevel ("End");
+		}
 	}
 
 	public void CheckObjectives ()
 	{
-			currentObjective++;
-			if (currentObjective >= objectives.Length) {
-				//WinTheGame ();
-			} else {
-				//ActivateObjective ();
-			}
+		currentObjective++;
+		if (currentObjective >= objectives.Length) {
+			//WinTheGame ();
+		} else {
+			//ActivateObjective ();
+		}
 	}
 
 	void ActivateObjective ()
 	{
 		canvas.SetActive (true);
 		ObjectiveIndicator.SetActive (true);
-		ObjectiveIndicator.GetComponent<Text> ().text = objectives [currentObjective].GetComponent<Leverswitch>().task; 
-		objectives[currentObjective].GetComponent<Leverswitch>().Active = true;
-		print(objectives[currentObjective]);
+		ObjectiveIndicator.GetComponent<Text> ().text = objectives [currentObjective].GetComponent<Leverswitch> ().task; 
+		objectives [currentObjective].GetComponent<Leverswitch> ().Active = true;
+		print (objectives [currentObjective]);
 	}
 
 	void WinTheGame ()

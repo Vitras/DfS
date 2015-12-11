@@ -7,6 +7,8 @@ public class Master : MonoBehaviour
 	public int timer;
 	public int pointsToWin;
 	public int handicap;
+	public int LastBluePoints;
+	public int LastRedPoints;
 	public AudioSource source;
 	// Use this for initialization
 	void Start ()
@@ -40,5 +42,21 @@ public class Master : MonoBehaviour
 	public void SetHandicap (int handicap)
 	{
 		this.handicap = handicap;
+	}
+	public void EndGame ()
+	{
+		Environment env = GameObject.Find ("EnvironmentManager").GetComponent<Environment> ();
+		LastBluePoints = env.ScoreBlue;
+		LastRedPoints = env.ScoreRed;
+		if (LastBluePoints + LastRedPoints >= pointsToWin) {
+			//you won
+		} else {
+			//you lost
+		}
+		if (LastRedPoints > LastBluePoints) {
+			//red won
+		} else {
+			//blue won
+		}
 	}
 }
