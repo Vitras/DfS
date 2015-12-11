@@ -7,7 +7,7 @@ public class MinimapScript : MonoBehaviour
 	
 	public Canvas canvas;
 	public Text notificationIndicator,pointsIndicator;
-	public GameObject mappanel, controlPanel;
+	public GameObject mappanel, controlPanel, helpPanel;
 	public GameObject leftButton,rightButton,topButton,bottomButton;
 	public GameObject colorIndicator1,colorIndicator2;
 	public int activeColor = 1;
@@ -16,11 +16,13 @@ public class MinimapScript : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
+		NetworkScript.instance.AskForObjectives();
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () 
 	{
+		//
 		pointsIndicator.text = NetworkScript.instance.Points.ToString() + " Points";
 	}
 
@@ -143,6 +145,7 @@ public class MinimapScript : MonoBehaviour
 
 	public void SwitchToMap()
 	{
+		NetworkScript.instance.AskForObjectives();
 		mappanel.SetActive(true);
 		controlPanel.SetActive(false);
 	}
@@ -152,12 +155,22 @@ public class MinimapScript : MonoBehaviour
 		mappanel.SetActive(false);
 		controlPanel.SetActive(true);
 	}
+
+	public void OpenHelp()
+	{
+		helpPanel.SetActive(true);
+	}
+
+	public void CloseHelp()
+	{
+		helpPanel.SetActive(false);
+	}
 	
 
 	IEnumerator ClearNotification(float time)
 	{
 		yield return new WaitForSeconds(time);
-		notificationIndicator.text = "Activate level objects. this costs 100 points each time!";
+		notificationIndicator.text = "Activate level objects. this costs 50 points each time!";
 	}
 
 
