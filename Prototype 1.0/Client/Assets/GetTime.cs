@@ -17,8 +17,7 @@ public class GetTime : MonoBehaviour
 	{
 		timeRemaining = Mathf.Max (timeRemaining - Time.deltaTime, 0);
 		if (timeRemaining <= 0) {
-			GameObject.Find ("Master").GetComponent<Master> ().EndGame ();
-			Application.LoadLevel ("End");
+			GameObject.Find ("EnvironmentManager").GetComponent<Environment> ().EndGame ();
 		}
 		this.GetComponent<Text> ().text = ((int)timeRemaining).ToString ();
 	

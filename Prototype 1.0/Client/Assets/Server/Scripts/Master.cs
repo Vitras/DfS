@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class Master : MonoBehaviour
@@ -9,12 +10,13 @@ public class Master : MonoBehaviour
 	public int handicap;
 	public int LastBluePoints;
 	public int LastRedPoints;
+	public bool GameEnded;
 	public AudioSource source;
 	// Use this for initialization
 	void Start ()
 	{
-		timer = 5 * 60;
-		pointsToWin = 5;
+		timer = 1 * 60;
+		pointsToWin = 1;
 		handicap = 50;
 		DontDestroyOnLoad (this);
 	}
@@ -27,6 +29,10 @@ public class Master : MonoBehaviour
 		}
 		if (Application.loadedLevelName == "MainMenu") {
 			source.enabled = true;
+		}
+		if (GameEnded && Application.loadedLevelName == "End") {
+			GameEnded = false;
+			EndGame ();
 		}
 	}
 
@@ -45,18 +51,23 @@ public class Master : MonoBehaviour
 	}
 	public void EndGame ()
 	{
-		Environment env = GameObject.Find ("EnvironmentManager").GetComponent<Environment> ();
-		LastBluePoints = env.ScoreBlue;
-		LastRedPoints = env.ScoreRed;
 		if (LastBluePoints + LastRedPoints >= pointsToWin) {
+			GameObject.Find ("FinishText").GetComponent<Text> ().text = "You made it! Well done!";
 			//you won
 		} else {
+			GameObject.Find ("FinishText").GetComponent<Text> ().text = "You ran out of time...";
 			//you lost
 		}
-		if (LastRedPoints > LastBluePoints) {
+		if (LastRedPoints > LastBluePoints) {			
+			GameObject.Find ("WinnerIndicator").GetComponent<Image> ().color = Color.red;
+
 			//red won
-		} else {
-			//blue won
+		} else if (LastRedPoints < LastBluePoints) {
+			GameObject.Find ("WinnerIndicator").GetComponent<Image> ().color = Color.blue;
+		} else {			
+			GameObject.Find ("WinnerIndicator").GetComponent<Image> ().color = Color.green;
+			//tie
 		}
 	}
+
 }

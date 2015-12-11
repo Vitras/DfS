@@ -39,11 +39,19 @@ public class Environment : MonoBehaviour
 		ScoreRedIndicator.GetComponent<Text> ().text = "Red team: " + ScoreRed.ToString ();
 		ScoreBlueIndicator.GetComponent<Text> ().text = "Blue team: " + ScoreBlue.ToString ();
 		if (ScoreRed + ScoreBlue >= GameObject.Find ("Master").GetComponent<Master> ().pointsToWin) {
-			GameObject.Find ("Master").GetComponent<Master> ().EndGame ();
-			Application.LoadLevel ("End");
+			EndGame ();
 		}
 	}
 
+	public void EndGame ()
+	{
+		Master master = GameObject.Find ("Master").GetComponent<Master> ();
+		master.LastRedPoints = ScoreRed;
+		master.LastBluePoints = ScoreBlue;
+		master.GameEnded = true;
+		Application.LoadLevel ("End");
+	}
+	
 	public void CheckObjectives ()
 	{
 		currentObjective++;
