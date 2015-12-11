@@ -7,7 +7,7 @@ public class MinimapScript : MonoBehaviour
 	
 	public Canvas canvas;
 	public Text notificationIndicator,pointsIndicator;
-	public GameObject mappanel, controlPanel;
+	public GameObject mappanel, controlPanel, helpPanel;
 	public GameObject leftButton,rightButton,topButton,bottomButton;
 	public GameObject colorIndicator1,colorIndicator2;
 	public int activeColor = 1;
@@ -22,6 +22,7 @@ public class MinimapScript : MonoBehaviour
 	// Update is called once per frame
 	void FixedUpdate () 
 	{
+		//
 		pointsIndicator.text = NetworkScript.instance.Points.ToString() + " Points";
 	}
 
@@ -153,6 +154,16 @@ public class MinimapScript : MonoBehaviour
 	{
 		mappanel.SetActive(false);
 		controlPanel.SetActive(true);
+	}
+
+	public void OpenHelp()
+	{
+		helpPanel.SetActive(true);
+	}
+
+	public void CloseHelp()
+	{
+		helpPanel.SetActive(false);
 	}
 	
 

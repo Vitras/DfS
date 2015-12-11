@@ -145,7 +145,7 @@ public class NetworkScript : MonoBehaviour
 	public void OnReceiveObjectives(NetworkMessage netMsg)
 	{
 		var msg = netMsg.ReadMessage<Messages.ObjectiveMessage>();
-		PostInUpdateLog("Received new objective locations!" + msg.blueObjective.ToString() + " and " + msg.redObjective.ToString() ,Color.black);
+		//PostInUpdateLog("Received new objective locations!" + msg.blueObjective.ToString() + " and " + msg.redObjective.ToString() ,Color.black);
 		GameObject mapButtons = GameObject.Find("MapButtons");
 		foreach(Transform child in mapButtons.transform)
 		{
