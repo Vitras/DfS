@@ -41,6 +41,8 @@ public class Server : MonoBehaviour
 		NetworkServer.RegisterHandler (Messages.initialMessageId, OnReceiveInitialMessage);
 		//listener for disconnectmessages from client
 		NetworkServer.RegisterHandler (Messages.clientDisconnectMessageId, OnReceiveClientDisconnectMessage);
+		//listen for objectives requests
+		NetworkServer.RegisterHandler (Messages.askForObjectivesMessageId, OnReceiveObjectiveRequest);
 		//Populate the ip address indicator and event feed
 		IpIndicator.text = Network.player.ipAddress;
 		eventFeed.text = "Important updates will appear here!";
@@ -147,13 +149,14 @@ public class Server : MonoBehaviour
 		} 
 		//
 	}
+	
 
-	public void SendObjectivesToAllClients(int blue, int red)
+	public void OnReceiveObjectiveRequest(NetworkMessage netMsg)
 	{
 		var msg = new Messages.ObjectiveMessage();
-		msg.blueObjective = blue;
-		msg.redObjective = red;
-		NetworkServer.SendToAll(Messages.objectiveMessageId,msg);
+		msg.blueObjective = blueObjective;
+		msg.redObjective = redObjective;
+		netMsg.conn.Send(Messages.objectiveMessageId,msg);
 	}
 	
 

@@ -145,7 +145,7 @@ public class NetworkScript : MonoBehaviour
 	public void OnReceiveObjectives(NetworkMessage netMsg)
 	{
 		var msg = netMsg.ReadMessage<Messages.ObjectiveMessage>();
-		PostInUpdateLog("Received new objective locations!",Color.black);
+		PostInUpdateLog("Received new objective locations!" + msg.blueObjective.ToString() + " and " + msg.redObjective.ToString() ,Color.black);
 		GameObject mapButtons = GameObject.Find("MapButtons");
 		foreach(Transform child in mapButtons.transform)
 		{
@@ -155,13 +155,13 @@ public class NetworkScript : MonoBehaviour
 			}
 			Debug.Log(child.name.Split('n')[1]);
 			Debug.Log(msg.blueObjective.ToString());
-			if(child.name.Split('n')[1] == (msg.blueObjective + 1).ToString())
+			if(child.name.Split('n')[1] == (msg.blueObjective).ToString())
 			{
 				var indicator = Instantiate(objective);
 				indicator.GetComponent<Image>().color = Color.blue;
 				indicator.transform.SetParent(child,false);
 			}
-			if(child.name.Split('n')[1] == (msg.redObjective + 1).ToString())
+			if(child.name.Split('n')[1] == (msg.redObjective).ToString())
 			{
 				var indicator = Instantiate(objective);
 				indicator.GetComponent<Image>().color = Color.red;
@@ -190,6 +190,12 @@ public class NetworkScript : MonoBehaviour
 		msg.id = playerId;
 		client.Send(Messages.commandMessageId,msg);
 		Debug.Log ("Command sent: " + command + "with message id: " + Messages.commandMessageId);
+	}
+
+	public void AskForObjectives()
+	{
+		var msg = new Messages.AskForObjectivesMessage();
+		client.Send(Messages.askForObjectivesMessageId,msg);
 	}
 
 	public void OnReceiveTeamMessage(NetworkMessage netMsg)

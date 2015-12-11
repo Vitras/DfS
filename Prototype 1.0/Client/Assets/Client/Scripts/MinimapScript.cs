@@ -16,6 +16,7 @@ public class MinimapScript : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
+		NetworkScript.instance.AskForObjectives();
 	}
 	
 	// Update is called once per frame
@@ -143,6 +144,7 @@ public class MinimapScript : MonoBehaviour
 
 	public void SwitchToMap()
 	{
+		NetworkScript.instance.AskForObjectives();
 		mappanel.SetActive(true);
 		controlPanel.SetActive(false);
 	}
@@ -157,7 +159,7 @@ public class MinimapScript : MonoBehaviour
 	IEnumerator ClearNotification(float time)
 	{
 		yield return new WaitForSeconds(time);
-		notificationIndicator.text = "Activate level objects. this costs 100 points each time!";
+		notificationIndicator.text = "Activate level objects. this costs 50 points each time!";
 	}
 
 

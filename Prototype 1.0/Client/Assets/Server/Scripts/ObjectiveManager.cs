@@ -55,10 +55,8 @@ public class ObjectiveManager : MonoBehaviour
 		obA.tag = "Objective A";
 		obB.gameObject.SetActive (true);
 		obB.tag = "Objective B";
-
-		//server.GetComponent<Server>().SendObjectivesToAllClients(blue,red);
-		//server.GetComponent<Server>().redObjective = red;
-		//server.GetComponent<Server>().blueObjective = blue;
+		server.GetComponent<Server>().redObjective = red;
+		server.GetComponent<Server>().blueObjective = blue;
 	}
 
 	List<Transform> EligibleObjectives (int xPos, int yPos)

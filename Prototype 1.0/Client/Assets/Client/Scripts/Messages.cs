@@ -7,6 +7,7 @@ public class Messages
 	public const short commandMessageId = 1000;
 	public const short initialMessageId = 1001;
 	public const short clientDisconnectMessageId = 1002;
+	public const short askForObjectivesMessageId = 1003;
 	public const short communicateTeamToClientMessageId = 2000;
 	public const short objectiveMessageId = 2001;
 
@@ -36,6 +37,9 @@ public class Messages
 		public int id;
 	}
 	
+	public class AskForObjectivesMessage : MessageBase
+	{
+	}
 
 	public class ObjectiveMessage : MessageBase
 	{
