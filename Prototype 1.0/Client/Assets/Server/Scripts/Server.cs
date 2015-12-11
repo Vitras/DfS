@@ -107,6 +107,7 @@ public class Server : MonoBehaviour
 		var teamMsg = new Messages.CommunicateTeamToClientMessage ();
 		teamMsg.team = (int)balancedTeamChoice;
 		teamMsg.id = p.id;
+		teamMsg.starterPoints = GameObject.Find("Master").GetComponent<Master>().handicap;
 		netMsg.conn.Send (Messages.communicateTeamToClientMessageId, teamMsg);
 
 		//send objectives

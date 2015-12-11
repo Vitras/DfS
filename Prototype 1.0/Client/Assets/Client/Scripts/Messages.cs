@@ -35,6 +35,7 @@ public class Messages
 	{
 		public int team;
 		public int id;
+		public int starterPoints;
 	}
 	
 	public class AskForObjectivesMessage : MessageBase

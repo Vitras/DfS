@@ -50,7 +50,7 @@ public class NetworkScript : MonoBehaviour
 	void Start()
 	{
 		myIp = Network.player.ipAddress;
-		points = 100;
+		points = 0;
 		team = Team.None;
 		//InvokeRepeating("CheckServerStatus",15.0f,5.0f);
 		//disconnectCounter = 0;
@@ -218,6 +218,7 @@ public class NetworkScript : MonoBehaviour
 			GameObject.Find("Username").GetComponent<Text>().color = Color.red;
 		}
 
+		points += msg.starterPoints;
 	}
 
 	void OnApplicationQuit()
