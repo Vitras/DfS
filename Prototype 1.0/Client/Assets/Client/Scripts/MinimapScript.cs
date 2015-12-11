@@ -17,6 +17,8 @@ public class MinimapScript : MonoBehaviour
 	void Start () 
 	{
 		NetworkScript.instance.AskForObjectives();
+		InvokeRepeating("GiveIdlePoints",1,1);
+		InvokeRepeating("UpdateObjectives",10,10);
 	}
 	
 	// Update is called once per frame
@@ -26,7 +28,10 @@ public class MinimapScript : MonoBehaviour
 		pointsIndicator.text = NetworkScript.instance.Points.ToString() + " Points";
 	}
 
-
+	public void UpdateObjectives()
+	{
+		NetworkScript.instance.AskForObjectives();
+	}
 
 	public void MapButtonClick(int button)
 	{
@@ -164,6 +169,11 @@ public class MinimapScript : MonoBehaviour
 	public void CloseHelp()
 	{
 		helpPanel.SetActive(false);
+	}
+
+	public void GiveIdlePoints()
+	{
+		NetworkScript.instance.points += 2;
 	}
 	
 
