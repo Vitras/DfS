@@ -7,6 +7,7 @@ public class Master : MonoBehaviour
 	public int timer;
 	public int pointsToWin;
 	public int handicap;
+	public AudioSource source;
 	// Use this for initialization
 	void Start ()
 	{
@@ -19,6 +20,12 @@ public class Master : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{	
+		if (GameObject.Find ("Main Camera") != null) {
+			transform.position = GameObject.Find ("Main Camera").transform.position;
+		}
+		if (Application.loadedLevelName == "MainMenu") {
+			source.enabled = true;
+		}
 	}
 
 	public void SetTimer (int time)
